@@ -53,8 +53,8 @@ Make sure you have **Docker** and **Docker Compose** installed.
  1. Clone the repository:
    ```bash
    git clone https://github.com/fatimIB/coffee-management-system.git
-   cd coffee-management-system
-      ```
+   cd coffee-management-system```
+   
   2.Build and run the containers:
      ```bash
      docker-compose up --build
@@ -92,5 +92,6 @@ Team Members:
 
 This project is for educational purposes only.
 Feel free to fork and modify it for learning or academic use.
+
 
 
