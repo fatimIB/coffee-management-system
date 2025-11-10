@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+       <div id="sidebar-container"></div>
+    <main>
+        menu
+    </main>
+</body>
+
+<script>
+    // Load sidebar.html into the container
+    fetch("../shared/sidebar.html")
+      .then(response => response.text())
+      .then(data => {
+         document.getElementById("sidebar-container").innerHTML = `
+      <link rel="stylesheet" href="../shared/sidebar_style.css">
+      ${data}
+    `;
+     const script = document.createElement("script");
+      script.src = "../shared/sidebar.js";
+      document.body.appendChild(script);
+      })
+      .catch(error => console.error("Error loading sidebar:", error));
+  </script>
+</html>

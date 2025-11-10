@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  # Database
+  db:
+    image: mysql:8.0
+    container_name: coffee_db
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  # Services
+  login_service:
+    build: ./services/login_service
+    ports:
+      - "5001:5001"
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+  order_service:
+    build: ./services/order_service
+    ports:
+      - "5002:5002"
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+  analytics_service:
+    build: ./services/analytics_service
+    ports:
+      - "5003:5003"
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+  cafe_service:
+    build: ./services/cafe_service
+    ports:
+      - "5004:5004"
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+  menu_service:
+    build: ./services/menu_service
+    ports:
+      - "5005:5005"
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+  inventory_service:
+    build: ./services/inventory_service
+    ports:
+      - "5006:5006"
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+  # Gateway
+  gateway:
+    build: ./gateway
+    ports:
+      - "5000:5000"
+    depends_on:
+      - login_service
+      - menu_service
+      - inventory_service
+      - cafe_service
+      - order_service
+      - analytics_service
+    env_file:
+      - .env
+
+  # Frontend
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - gateway
+
+volumes:
+  db_data:
