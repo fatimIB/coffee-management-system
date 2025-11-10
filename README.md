@@ -51,10 +51,10 @@ This project demonstrates a distributed architecture where each feature of the s
 Make sure you have **Docker** and **Docker Compose** installed.
 
  1. Clone the repository:
-    
+    <code>
     git clone https://github.com/fatimIB/coffee-management-system.git
     cd coffee-management-system
-   
+     </code>
   2.Build and run the containers:
      
      docker-compose up --build
@@ -92,6 +92,7 @@ Team Members:
 
 This project is for educational purposes only.
 Feel free to fork and modify it for learning or academic use.
+
 
 
 
