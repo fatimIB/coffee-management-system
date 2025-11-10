@@ -168,7 +168,7 @@ This project demonstrates a distributed architecture where each feature of the s
 
 Make sure you have **Docker** and **Docker Compose** installed.
 
-1. Clone the repository:
+ 1. Clone the repository:
    ```bash
    git clone https://github.com/fatimIB/coffee-management-system.git
    cd coffee-management-system
@@ -180,11 +180,11 @@ Make sure you have **Docker** and **Docker Compose** installed.
 
   3.Access the system:
 
-    - **Frontend:** http://localhost:8080
+    - Frontend: http://localhost:8080
 
-    - **Gateway API:** http://localhost:5000
+    - Gateway API: http://localhost:5000
 
-    - **MySQL Database:** localhost:3307
+    - MySQL Database: localhost:3307
 
   4.Stop containers:
     ```bash
@@ -210,3 +210,4 @@ Team Members:
 
 This project is for educational purposes only.
 Feel free to fork and modify it for learning or academic use.
+
