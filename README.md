@@ -51,16 +51,18 @@ This project demonstrates a distributed architecture where each feature of the s
 Make sure you have **Docker** and **Docker Compose** installed.
 
  1. Clone the repository:
-    <code>
-    git clone https://github.com/fatimIB/coffee-management-system.git
+    
+    <code>git clone https://github.com/fatimIB/coffee-management-system.git
     cd coffee-management-system
-     </code>
-  2.Build and run the containers:
+    </code>
+
      
-     docker-compose up --build
+2. Build and run the containers:
+     
+     <code>docker-compose up --build</code>
 
 
-  3.Access the system:
+3. Access the system:
 
     - Frontend: http://localhost:8080
 
@@ -68,9 +70,9 @@ Make sure you have **Docker** and **Docker Compose** installed.
 
     - MySQL Database: localhost:3307
 
-  4.Stop containers:
+  4. Stop containers:
    
-    docker-compose down
+     <code>docker-compose down</code>
     
  ## 🧠 How It Works
 
@@ -92,6 +94,7 @@ Team Members:
 
 This project is for educational purposes only.
 Feel free to fork and modify it for learning or academic use.
+
 
 
 
