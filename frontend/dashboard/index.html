@@ -3,12 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 <body>
       <div id="sidebar-container"></div>
     <main>
-        dashboard
+       <div class="container">
+        <!-- CARDS -->
+            <div class="cards">
+                <div class="card" id="top-cafe-card">
+                    <h3>Top Café</h3>
+                    <p id="top-cafe-name">Loading...</p>
+                    <p id="top-cafe-sales"></p>
+                </div>
+                <div class="card" id="top-product-card">
+                    <h3>Top Product</h3>
+                    <p id="top-product-name">Loading...</p>
+                    <p id="top-product-sales"></p>
+                </div>
+                <div class="card" id="total-sales-card">
+                    <h3>Total Sales</h3>
+                    <p id="total-sales">Loading...</p>
+                </div>
+                <div class="card" id="growth-card">
+                    <h3>Growth Rate vs Last Month</h3>
+                    <p id="growth-rate">Loading...</p>
+                </div>
+            </div>
+        
+
+            <!-- CHARTS -->
+            <div class="charts-row">
+                <canvas id="chart-sales-trend"></canvas>
+                <canvas id="chart-cafe-comparison"></canvas>
+            </div>
+            <div class="charts-row">
+                <canvas id="chart-products"></canvas>
+                <canvas id="chart-categories"></canvas>
+            </div>
+            <div class="charts-row">
+                <canvas id="chart-predictions"></canvas>
+                <div class="prediction-table-wrapper">
+                    <h3 class="prediction-title">Performance Prediction Ranking</h3>
+                    <table id="prediction-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Café</th>
+                                <th>Predicted Sales</th>
+                                <th>Growth %</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="dashboard.js"></script>
     </main>
 </body>
 

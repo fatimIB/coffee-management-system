@@ -1,2 +1,7 @@
 flask
 grpcio
+mysql-connector-python
+python-dotenv
+pandas 
+scikit-learn
+protobuf

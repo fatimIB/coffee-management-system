@@ -8,6 +8,9 @@ services:
     restart: always
     env_file:
       - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
     ports:
       - "3307:3306"
     volumes:
@@ -35,12 +38,17 @@ services:
 
   analytics_service:
     build: ./services/analytics_service
+    volumes:
+     - ./services/analytics_service/proto:/app/proto
+     - ./database:/app/database
     ports:
       - "5003:5003"
     depends_on:
       - db
     env_file:
       - .env
+    environment:
+      - PYTHONPATH=/app
 
   cafe_service:
     build: ./services/cafe_service
@@ -83,6 +91,10 @@ services:
       - analytics_service
     env_file:
       - .env
+    volumes:
+      - ./services/analytics_service/proto:/app/proto
+    environment:
+      - PYTHONPATH=/app
 
   # Frontend
   frontend:

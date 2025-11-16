@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package analytics;
+
+// Request for month/year
+message MonthRequest {
+    int32 month = 1;
+    int32 year = 2;
+}
+
+// Response for card metrics
+message CardMetrics {
+    string top_product = 1;
+    string top_cafe = 2;
+    double total_sales = 3;
+    double growth_percent = 4;
+}
+
+// Analytics service definition
+message CafeSales {
+    string cafe = 1;
+    double total_sales = 2;
+}
+
+message DailySales {
+    string cafe = 1;
+    string date = 2;
+    double daily_total = 3;
+}
+
+message ProductItem {
+    string product = 1;
+    int32 qty = 2;
+}
+
+message CafeProducts {
+    string cafe = 1;
+    repeated ProductItem top_3 = 2;
+    repeated ProductItem bottom_3 = 3;
+}
+
+message CategoryItem {
+    string category = 1;
+    double total = 2;
+}
+
+message OverviewAnalytics {
+    repeated CafeSales cafe_comparison = 1;
+    repeated DailySales sales_overtime = 2;
+    repeated CafeProducts products_overview = 3;
+    repeated CategoryItem category_distribution = 4;
+}
+
+message PredictionRequest {
+    // optionally add month/year if needed
+}
+
+message CafePrediction {
+    string cafe_name = 1;
+    double current_sales = 2;
+    double predicted_sales = 3;
+    double growth_percent = 4;
+    int32 rank = 5;
+}
+
+message PredictionResponse {
+    repeated CafePrediction predictions = 1;
+}
+
+/* ------------ END NEW ------------ */
+
+service AnalyticsService {
+    rpc GetCardMetrics(MonthRequest) returns (CardMetrics);
+    rpc GetOverviewAnalytics(MonthRequest) returns (OverviewAnalytics);
+    rpc GetPredictions(PredictionRequest) returns (PredictionResponse); // NEW
+
+}

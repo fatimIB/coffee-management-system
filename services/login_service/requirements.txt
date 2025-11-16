@@ -1,2 +1,5 @@
 flask
 grpcio
+mysql-connector-python
+python-dotenv
+protobuf
