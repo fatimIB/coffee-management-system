@@ -1,0 +1,190 @@
+/* Fichier: frontend/static/inventory.css */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.container {
+    display: flex;       /* Met les éléments côte à côte */
+    width: 100%;         /* Prend toute la largeur */
+    min-height: 100vh;   /* Prend toute la hauteur de l'écran */
+}
+#sidebar-container {
+    width: 250px;       /* Fixe la largeur de la sidebar (ajustez selon votre besoin) */
+    flex-shrink: 0;     /* Empêche la sidebar de rétrécir */
+}
+.sidebar { 
+    width: 250px; 
+    background-color: #f8f8f8; 
+    padding: 20px; 
+    min-height: 100vh; 
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.main-content {
+    flex-grow: 1;       /* Prend tout l'espace restant */
+    
+    /* C'est ICI que l'espace se crée */
+    margin-left: 30px;  /* Espace extérieur gauche (entre sidebar et table) */
+    padding: 20px;      /* Espace intérieur (pour que le texte ne touche pas les bords haut/droite) */
+    
+    background-color: #f5f5f5; /* Couleur de fond gris clair (comme sur votre image) */
+}
+
+.filters-row {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    width: 30%;
+    padding: 10px;
+    
+}
+
+.cafe-filter {
+    padding: 10px;
+    min-width: 200px;
+}
+
+.nav-link { 
+    display: block; 
+    padding: 10px 0; 
+    text-decoration: none; 
+    color: #333; 
+    border-bottom: 1px solid #eee;
+}
+
+.nav-link:hover { 
+    color: #798b13; 
+}
+
+.active-link { 
+    font-weight: bold; 
+    color: #539114; /* Sienne */
+}
+
+/* Styles du Tableau de Stock */
+.stock-table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-top: 20px; 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    background-color: rgba(246, 247, 229, 0.443);
+}
+
+.stock-table th, .stock-table td { 
+    border: 1px solid #6c6c6cca; 
+    padding: 12px; 
+    text-align: left; 
+}
+
+.stock-table th { 
+    background-color: #21afec; /* Sienne Foncé */
+    color: rgb(255, 255, 255); 
+    text-transform: uppercase;
+}
+
+.low-stock { 
+    background-color: #d7cf8881; /* Jaune pâle pour les faibles stocks */
+    font-weight: bold;
+} 
+
+.restock-btn { 
+    background-color: #eb8908; /* Tan */
+    color: white; 
+    border: none; 
+    padding: 8px 15px; 
+    cursor: pointer; 
+    border-radius: 4px; 
+    transition: background-color 0.3s;
+}
+
+.restock-btn:hover { 
+    background-color: #8b136b; /* Marron */
+}
+
+/* Styles du Modal (Popup) */
+.modal { 
+    display: none; 
+    position: fixed; 
+    z-index: 1000; 
+    left: 0; 
+    top: 0; 
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.6); 
+}
+.stockh1{
+align-items: center; 
+    
+    /* 4. Center Horizontally (Optional but usually desired) */
+    justify-content: right;
+    color:brown;
+    font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+}
+
+.modal-content { 
+    background-color: #fefefe; 
+    margin: 10% auto; /* Centrage un peu plus haut */
+    padding: 25px; 
+    border: 1px solid #888; 
+    width: 400px; 
+    border-radius: 8px; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.close-btn { 
+    color: #aaa; 
+    float: right; 
+    font-size: 28px; 
+    font-weight: bold; 
+}
+
+.close-btn:hover, .close-btn:focus { 
+    color: #000; 
+    text-decoration: none; 
+    cursor: pointer; 
+}
+
+.modal-content label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.operation-toggle {
+    display: flex;
+    gap: 15px;
+    margin-top: 8px;
+}
+
+.operation-toggle label {
+    font-weight: normal;
+}
+
+.modal-content input, .modal-content button { 
+    width: 100%; 
+    padding: 10px; 
+    margin: 8px 0; 
+    box-sizing: border-box; 
+    border-radius: 4px;
+}
+
+.modal-content button#saveRestockBtn {
+    background-color: #A0522D;
+    color: white;
+    font-size: 16px;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.modal-content button#saveRestockBtn:hover {
+    background-color: #8B4513;
+}

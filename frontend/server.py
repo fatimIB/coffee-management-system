@@ -1,30 +1,13 @@
-from flask import Flask, send_from_directory, abort
-import os
+from flask import Flask, render_template
 
-app = Flask(__name__, static_folder='.')
+# On définit le dossier courant comme dossier de templates
+app = Flask(__name__, template_folder='.') 
 
-# Serve the main page (default to login)
-@app.route('/')
-def home():
-    return send_from_directory('login', 'index.html')
-
-# Dynamically serve any page with /<folder>/index.html
-@app.route('/<folder>/index.html')
-def serve_page(folder):
-    folder_path = os.path.join(app.static_folder, folder)
-    if os.path.exists(os.path.join(folder_path, 'index.html')):
-        return send_from_directory(folder, 'index.html')
-    else:
-        abort(404)
-
-# Serve static files (CSS/JS/images) dynamically
-@app.route('/<folder>/<filename>')
-def serve_static(folder, filename):
-    file_path = os.path.join(app.static_folder, folder, filename)
-    if os.path.exists(file_path):
-        return send_from_directory(folder, filename)
-    else:
-        abort(404)
+@app.route('/inventory')
+def inventory_page():
+    # Flask va chercher dans le dossier courant, donc on précise 'inventory/index.html'
+    return render_template('inventory/index.html')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+    # Écoute sur 0.0.0.0 pour être accessible depuis l'extérieur du conteneur Docker
+    app.run(host='0.0.0.0', port=8080, debug=True)
