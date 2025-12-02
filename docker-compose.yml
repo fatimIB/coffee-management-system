@@ -70,6 +70,8 @@ services:
 
   inventory_service:
     build: ./services/inventory_service
+    volumes:
+      - ./database:/app/database
     ports:
       - "5006:5006"
     depends_on:
@@ -93,6 +95,7 @@ services:
       - .env
     volumes:
       - ./services/analytics_service/proto:/app/proto
+      - ./services/inventory_service/proto:/app/proto
     environment:
       - PYTHONPATH=/app
 

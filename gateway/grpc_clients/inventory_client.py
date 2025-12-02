@@ -1,10 +1,11 @@
+import os
 import grpc
-# Assurez-vous d'importer les modules gRPC générés
-# import inventory_pb2
-# import inventory_pb2_grpc
+from proto import inventory_pb2, inventory_pb2_grpc
 
-# Adresse du Service Inventaire: nom du service Docker + port 5006
-INVENTORY_SERVICE_ADDRESS = 'inventory_service:5006' 
+# Adresse du Service Inventaire
+# - En production / via docker-compose: "inventory_service:5006"
+# - En développement local (services lancés sur la machine): "localhost:5006"
+INVENTORY_SERVICE_ADDRESS = os.getenv("INVENTORY_SERVICE_ADDRESS", "inventory_service:5006")
 
 class InventoryClient:
     def __init__(self):
@@ -47,7 +48,7 @@ class InventoryClient:
 
     # Cette méthode serait utilisée par le Service Commandes (via la Gateway si vous la centralisez)
     def update_inventory(self, item_id, cafe_id, quantity_ordered):
-        request = inventory.UpdateInventoryRequest(
+        request = inventory_pb2.UpdateInventoryRequest(
             item_id=item_id,
             cafe_id=cafe_id,
             quantity_ordered=quantity_ordered

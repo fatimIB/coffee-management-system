@@ -8,14 +8,16 @@ body {
 }
 
 .container {
-    display: flex;       /* Met les éléments côte à côte */
-    width: 100%;         /* Prend toute la largeur */
-    min-height: 100vh;   /* Prend toute la hauteur de l'écran */
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
 }
+
 #sidebar-container {
-    width: 250px;       /* Fixe la largeur de la sidebar (ajustez selon votre besoin) */
-    flex-shrink: 0;     /* Empêche la sidebar de rétrécir */
+    width: 250px;
+    flex-shrink: 0;
 }
+
 .sidebar { 
     width: 250px; 
     background-color: #f8f8f8; 
@@ -25,32 +27,32 @@ body {
 }
 
 .main-content {
-    flex-grow: 1;       /* Prend tout l'espace restant */
-    
-    /* C'est ICI que l'espace se crée */
-    margin-left: 30px;  /* Espace extérieur gauche (entre sidebar et table) */
-    padding: 20px;      /* Espace intérieur (pour que le texte ne touche pas les bords haut/droite) */
-    
-    background-color: #f5f5f5; /* Couleur de fond gris clair (comme sur votre image) */
+    flex-grow: 1;
+    margin-left: 30px;
+    padding: 20px;
+    background-color: #f5f5f5; 
 }
 
-.filters-row {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    margin-bottom: 20px;
-}
+/* ======================================================= */
+/* NOUVEAU : STYLE SEARCH ET DROPDOWN (AGRANDIR)           */
+/* ======================================================= */
 
-.search-input {
-    width: 30%;
-    padding: 10px;
+/* Cela cible les inputs et select qui sont directement dans le contenu principal (pas dans le modal) */
+.main-content input[type="text"], 
+.main-content select {
+    padding: 12px 15px;  /* Plus de hauteur (padding interne) */
+    font-size: 16px;     /* Texte plus grand */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px; /* Espace en bas */
+    margin-right: 15px;  /* Espace entre le search et le dropdown */
     
+    /* Largeur : Tu peux ajuster ici */
+    width: 300px;        /* Largeur fixe plus grande */
+    /* ou width: 40%; si tu veux que ça prenne un pourcentage de l'écran */
 }
 
-.cafe-filter {
-    padding: 10px;
-    min-width: 200px;
-}
+/* ======================================================= */
 
 .nav-link { 
     display: block; 
@@ -66,7 +68,7 @@ body {
 
 .active-link { 
     font-weight: bold; 
-    color: #539114; /* Sienne */
+    color: #539114;
 }
 
 /* Styles du Tableau de Stock */
@@ -79,24 +81,37 @@ body {
 }
 
 .stock-table th, .stock-table td { 
-    border: 1px solid #6c6c6cca; 
+    border: 1px solid #a52e2e; 
     padding: 12px; 
     text-align: left; 
 }
 
 .stock-table th { 
-    background-color: #21afec; /* Sienne Foncé */
+    background-color: #21afec;
     color: rgb(255, 255, 255); 
     text-transform: uppercase;
 }
 
+/* ======================================================= */
+/* NOUVEAU : EFFET HOVER SUR LE TABLEAU                    */
+/* ======================================================= */
+
+/* Change la couleur de fond quand la souris passe sur une ligne */
+.stock-table tbody tr:hover {
+    background-color: #e0e0e0; /* Gris un peu plus foncé */
+    cursor: pointer;           /* Change le curseur en main */
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* ======================================================= */
+
 .low-stock { 
-    background-color: #d7cf8881; /* Jaune pâle pour les faibles stocks */
+    background-color: #d7cf8881; 
     font-weight: bold;
 } 
 
 .restock-btn { 
-    background-color: #eb8908; /* Tan */
+    background-color: #eb8908; 
     color: white; 
     border: none; 
     padding: 8px 15px; 
@@ -106,7 +121,7 @@ body {
 }
 
 .restock-btn:hover { 
-    background-color: #8b136b; /* Marron */
+    background-color: #8b136b; 
 }
 
 /* Styles du Modal (Popup) */
@@ -121,18 +136,19 @@ body {
     overflow: auto; 
     background-color: rgba(0,0,0,0.6); 
 }
-.stockh1{
-align-items: center; 
-    
-    /* 4. Center Horizontally (Optional but usually desired) */
-    justify-content: right;
-    color:brown;
-    font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+
+.stockh1 {
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    color: brown;
+    padding: 30px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 .modal-content { 
     background-color: #fefefe; 
-    margin: 10% auto; /* Centrage un peu plus haut */
+    margin: 10% auto; 
     padding: 25px; 
     border: 1px solid #888; 
     width: 400px; 
@@ -159,17 +175,9 @@ align-items: center;
     font-weight: bold;
 }
 
-.operation-toggle {
-    display: flex;
-    gap: 15px;
-    margin-top: 8px;
-}
-
-.operation-toggle label {
-    font-weight: normal;
-}
-
-.modal-content input, .modal-content button { 
+/* INPUTS DANS LE MODAL (Restent normaux) */
+.modal-content input:not([type="radio"]), 
+.modal-content button { 
     width: 100%; 
     padding: 10px; 
     margin: 8px 0; 
@@ -187,4 +195,32 @@ align-items: center;
 
 .modal-content button#saveRestockBtn:hover {
     background-color: #8B4513;
+}
+
+/* BOUTONS RADIO (Ajouter / Diminuer) */
+.operation-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 15px 0 20px 0;
+}
+
+.operation-toggle label {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;    
+    text-align: center;     
+    cursor: pointer;
+    font-weight: normal;
+    color: #333;
+    margin-top: 0;
+    width: 100px; 
+}
+
+.operation-toggle input[type="radio"] {
+    width: auto; 
+    accent-color: #eb8908; 
+    transform: scale(1.3); 
+    margin: 0 0 2px 0; 
+    cursor: pointer;
 }

@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from grpc_clients import analytics_client
+from grpc_clients import analytics_client, inventory_client
 from flask_cors import CORS  # import CORS
 from collections import defaultdict
 import math
@@ -123,6 +123,33 @@ def get_predictions():
         ]
         return jsonify(predictions)
     except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Add these new routes for inventory
+@app.route('/api/inventory/all', methods=['GET'])
+def get_all_inventory():
+    try:
+        client = inventory_client.InventoryClient()
+        items = client.get_all_inventory()
+        return jsonify(items)
+    except Exception as e:
+        print(f"Error getting inventory: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/inventory/restock', methods=['POST'])
+def restock_item():
+    try:
+        data = request.json
+        client = inventory_client.InventoryClient()
+        result = client.restock_item(
+            item_id=data.get('item_id'),
+            cafe_id=data.get('cafe_id'),
+            quantity_added=data.get('quantity_added'),
+            date=data.get('restock_date')
+        )
+        return jsonify(result)
+    except Exception as e:
+        print(f"Error restocking item: {e}")
         return jsonify({"error": str(e)}), 500
 
 
