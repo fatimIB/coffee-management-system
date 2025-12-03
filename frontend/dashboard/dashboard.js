@@ -1,5 +1,26 @@
 // dashboard.js
 
+// Helper to dynamically resolve the gateway URL based on the host/port
+const DEFAULT_GATEWAY_PORT = '5000';
+
+function resolveGatewayUrl() {
+    if (window.GATEWAY_URL && window.GATEWAY_URL.trim()) {
+        return window.GATEWAY_URL.trim().replace(/\/$/, '');
+    }
+
+    const rawProtocol = window.location.protocol || 'http:';
+    const protocol = rawProtocol.startsWith('http') ? rawProtocol : 'http:';
+    const hostname = window.location.hostname || 'localhost';
+    const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+    const port = isLocalhost
+        ? DEFAULT_GATEWAY_PORT
+        : (window.__GATEWAY_PORT__ || DEFAULT_GATEWAY_PORT);
+
+    return `${protocol}//${hostname}${port ? `:${port}` : ''}`;
+}
+
+const GATEWAY_URL = resolveGatewayUrl();
+
 // Get current month and year
 //const today = new Date();
 //const currentMonth = today.getMonth() + 1; // JS months are 0-indexed
@@ -13,7 +34,7 @@ const currentYear = 2025;
 
 async function fetchCardAnalytics() {
     try {
-        const response = await fetch(`http://localhost:5000/analytics?month=${currentMonth}&year=${currentYear}`);
+        const response = await fetch(`${GATEWAY_URL}/analytics?month=${currentMonth}&year=${currentYear}`);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         return await response.json();
     } catch (err) {
@@ -24,7 +45,7 @@ async function fetchCardAnalytics() {
 
 async function fetchOverviewAnalytics() {
     try {
-        const response = await fetch(`http://localhost:5000/analytics/overview?month=${currentMonth}&year=${currentYear}`);
+        const response = await fetch(`${GATEWAY_URL}/analytics/overview?month=${currentMonth}&year=${currentYear}`);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         return await response.json();
     } catch (err) {
@@ -34,7 +55,7 @@ async function fetchOverviewAnalytics() {
 }
 async function fetchPredictions() {
     try {
-        const response = await fetch(`http://localhost:5000/analytics/predictions?month=${currentMonth}&year=${currentYear}`);
+        const response = await fetch(`${GATEWAY_URL}/analytics/predictions?month=${currentMonth}&year=${currentYear}`);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         return await response.json();
     } catch (err) {

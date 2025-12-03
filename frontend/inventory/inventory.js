@@ -1,5 +1,23 @@
-// Adresse de votre Gateway Flask, qui écoute sur le port 5000
-const GATEWAY_URL = 'http://localhost:5000'; 
+// Résout dynamiquement l'URL de la Gateway (port configurable)
+const DEFAULT_GATEWAY_PORT = '5000';
+
+function resolveGatewayUrl() {
+    if (window.GATEWAY_URL && window.GATEWAY_URL.trim()) {
+        return window.GATEWAY_URL.trim().replace(/\/$/, '');
+    }
+
+    const rawProtocol = window.location.protocol || 'http:';
+    const protocol = rawProtocol.startsWith('http') ? rawProtocol : 'http:';
+    const hostname = window.location.hostname || 'localhost';
+    const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+    const port = isLocalhost
+        ? DEFAULT_GATEWAY_PORT
+        : (window.__GATEWAY_PORT__ || DEFAULT_GATEWAY_PORT);
+
+    return `${protocol}//${hostname}${port ? `:${port}` : ''}`;
+}
+
+const GATEWAY_URL = resolveGatewayUrl();
 
 let allInventoryItems = [];
 

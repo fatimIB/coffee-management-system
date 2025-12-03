@@ -94,8 +94,12 @@ services:
     env_file:
       - .env
     volumes:
-      - ./services/analytics_service/proto:/app/proto
-      - ./services/inventory_service/proto:/app/proto
+      # Monte explicitement les fichiers gRPC nécessaires dans un seul package /app/proto
+      - ./services/analytics_service/proto/__init__.py:/app/proto/__init__.py
+      - ./services/analytics_service/proto/analytics_pb2.py:/app/proto/analytics_pb2.py
+      - ./services/analytics_service/proto/analytics_pb2_grpc.py:/app/proto/analytics_pb2_grpc.py
+      - ./services/inventory_service/proto/inventory_pb2.py:/app/proto/inventory_pb2.py
+      - ./services/inventory_service/proto/inventory_pb2_grpc.py:/app/proto/inventory_pb2_grpc.py
     environment:
       - PYTHONPATH=/app
 

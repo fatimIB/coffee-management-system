@@ -70,7 +70,20 @@ Make sure you have **Docker** and **Docker Compose** installed.
 
     - MySQL Database: localhost:3307
 
-  4. Stop containers:
+  4. Configure the frontend ↔ gateway URL if needed:
+  
+     By défaut, le frontend essaie de contacter la gateway sur le même hôte (port 5000).  
+     Dans un environnement déployé (reverse proxy, domaine personnalisé, HTTPS, etc.), ajoutez cette ligne **avant** vos scripts frontend (par exemple dans `frontend/inventory/index.html`) pour indiquer une URL explicite :
+     
+     ```html
+     <script>
+       window.GATEWAY_URL = 'https://api.mondomaine.com';
+     </script>
+     ```
+     
+     Vous pouvez aussi définir `window.__GATEWAY_PORT__` si seul le port diffère. En local, rien n'est nécessaire.
+
+  5. Stop containers:
    
      <code>docker-compose down</code>
     
