@@ -1,30 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Menu</title>
+
+    <!-- Boxicons -->
+    <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet">
+
+    <!-- Shared sidebar -->
+    <link rel="stylesheet" href="../shared/sidebar_style.css">
+
+    <!-- Menu CSS -->
+    <link rel="stylesheet" href="menu.css">
 </head>
+
 <body>
-       <div id="sidebar-container"></div>
-    <main>
-        menu
-    </main>
+    <div id="sidebar-container"></div>
+
+    <div class="container">
+
+        <!-- Main Content -->
+        <div class="content">
+
+            <!-- ADD ITEM CARD -->
+            <div class="add-card">
+                <h2>Add New Item</h2>
+
+                <div class="row">
+                    <input type="text" id="name" placeholder="Product Name">
+
+                    <select id="category">
+                        <option value="">Select a Category</option>
+                        <option value="Boisson">Boisson</option>
+                        <option value="Viennoiserie">Viennoiserie</option>
+                        <option value="Pâtisserie">Pâtisserie</option>
+                        <option value="Sandwich">Sandwich</option>
+                        <option value="Salade">Salade</option>
+                        <option value="Snack">Snack</option>
+                    </select>
+
+                    <input type="number" id="price" placeholder="0.00">
+                </div>
+
+                <button id="add-btn">Add</button>
+            </div>
+
+            <!-- SEARCH BAR -->
+            <div class="search-wrapper">
+                <input type="text" id="search" placeholder="Search">
+            </div>
+
+            <!-- TABLE -->
+            <div class="table-card">
+                <h2>Item Menu</h2>
+
+                <div class="table-info">
+                    <span id="table-info">Showing 0 items</span>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="menu-table"></tbody>
+                </table>
+
+                <div class="pagination" id="pagination"></div>
+            </div>
+
+        </div>
+    </div>
+    <!-- DELETE CONFIRMATION MODAL -->
+    <div id="delete-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3>Are you sure?</h3>
+            <p>This item will be permanently deleted.</p>
+
+            <div class="modal-actions">
+                <button id="cancel-delete" class="modal-btn cancel">Cancel</button>
+                <button id="confirm-delete" class="modal-btn confirm">Delete</button>
+            </div>
+        </div>
+    </div>
+
 </body>
+<script src="menu.js"></script>
 
 <script>
-    // Load sidebar.html into the container
+    // Load sidebar
     fetch("../shared/sidebar.html")
-      .then(response => response.text())
-      .then(data => {
-         document.getElementById("sidebar-container").innerHTML = `
-      <link rel="stylesheet" href="../shared/sidebar_style.css">
-      ${data}
-    `;
-     const script = document.createElement("script");
-      script.src = "../shared/sidebar.js";
-      document.body.appendChild(script);
-      })
-      .catch(error => console.error("Error loading sidebar:", error));
-  </script>
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("sidebar-container").innerHTML = `
+                    <link rel="stylesheet" href="../shared/sidebar_style.css">
+                    ${data}
+                `;
+            const script = document.createElement("script");
+            script.src = "../shared/sidebar.js";
+            document.body.appendChild(script);
+        });
+</script>
+
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,11 +9,12 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
+
 <body>
-      <div id="sidebar-container"></div>
+    <div id="sidebar-container"></div>
     <main>
-       <div class="container">
-        <!-- CARDS -->
+        <div class="container">
+            <!-- CARDS -->
             <div class="cards">
                 <div class="card" id="top-cafe-card">
                     <h3>Top Café</h3>
@@ -33,7 +35,7 @@
                     <p id="growth-rate">Loading...</p>
                 </div>
             </div>
-        
+
 
             <!-- CHARTS -->
             <div class="charts-row">
@@ -62,26 +64,27 @@
                 </div>
             </div>
         </div>
-    </div>
+        </div>
 
 
-    <script src="dashboard.js"></script>
+        <script src="dashboard.js"></script>
     </main>
 </body>
 
 <script>
     // Load sidebar.html into the container
     fetch("../shared/sidebar.html")
-      .then(response => response.text())
-      .then(data => {
-         document.getElementById("sidebar-container").innerHTML = `
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("sidebar-container").innerHTML = `
       <link rel="stylesheet" href="../shared/sidebar_style.css">
       ${data}
     `;
-     const script = document.createElement("script");
-      script.src = "../shared/sidebar.js";
-      document.body.appendChild(script);
-      })
-      .catch(error => console.error("Error loading sidebar:", error));
-  </script>
+            const script = document.createElement("script");
+            script.src = "../shared/sidebar.js";
+            document.body.appendChild(script);
+        })
+        .catch(error => console.error("Error loading sidebar:", error));
+</script>
+
 </html>

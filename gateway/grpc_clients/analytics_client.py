@@ -1,5 +1,7 @@
 import grpc
-from proto import analytics_pb2, analytics_pb2_grpc
+
+from shared_proto import analytics_pb2, analytics_pb2_grpc
+
 
 channel = grpc.insecure_channel('analytics_service:5003')
 stub = analytics_pb2_grpc.AnalyticsServiceStub(channel)

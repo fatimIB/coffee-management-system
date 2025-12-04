@@ -1,6 +1,6 @@
 from concurrent import futures
 import grpc
-from proto import analytics_pb2, analytics_pb2_grpc
+from shared_proto import analytics_pb2, analytics_pb2_grpc
 from models.analytics import Analytics
 from models.predictions import SalesPredictor
 

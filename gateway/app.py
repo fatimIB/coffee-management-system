@@ -1,11 +1,17 @@
 from flask import Flask, jsonify, request
-from grpc_clients import analytics_client
+from grpc_clients import analytics_client, inventory_client
 from flask_cors import CORS  # import CORS
 from collections import defaultdict
 import math
+from grpc_clients.menu_client import get_menu_items, add_menu_item, update_menu_item, delete_menu_item
+from dotenv import load_dotenv
+
+# Load env variables
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)  # Enable
+
 
 @app.route('/analytics', methods=['GET'])
 def get_analytics():
@@ -123,6 +129,82 @@ def get_predictions():
         ]
         return jsonify(predictions)
     except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# -------- MENU API --------
+@app.route("/api/menu", methods=["GET"])
+def api_get_menu():
+    try:
+        search = request.args.get("search", "")
+        items = get_menu_items(search)
+        return jsonify(items)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/menu/add", methods=["POST"])
+def api_add_menu():
+    try:
+        data = request.json
+        if not data or not all(k in data for k in ["name", "category", "price"]):
+            return jsonify({"error": "Missing required fields"}), 400
+        item = add_menu_item(data["name"], data["category"], float(data["price"]))
+        if item is None:
+            return jsonify({"error": "Failed to add menu item"}), 500
+        return jsonify(item)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/menu/update", methods=["PUT"])
+def api_update_menu():
+    try:
+        data = request.json
+        if not data or not all(k in data for k in ["id", "name", "category", "price"]):
+            return jsonify({"error": "Missing required fields"}), 400
+        item = update_menu_item(data["id"], data["name"], data["category"], float(data["price"]))
+        if item is None:
+            return jsonify({"error": "Failed to update menu item"}), 500
+        return jsonify(item)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/menu/delete", methods=["DELETE"])
+def api_delete_menu():
+    try:
+        data = request.json
+        if not data or "id" not in data:
+            return jsonify({"error": "Missing id field"}), 400
+        success = delete_menu_item(data["id"])
+        return jsonify({"success": success})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
+# Add these new routes for inventory
+@app.route('/api/inventory/all', methods=['GET'])
+def get_all_inventory():
+    try:
+        client = inventory_client.InventoryClient()
+        items = client.get_all_inventory()
+        return jsonify(items)
+    except Exception as e:
+        print(f"Error getting inventory: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/inventory/restock', methods=['POST'])
+def restock_item():
+    try:
+        data = request.json
+        client = inventory_client.InventoryClient()
+        result = client.restock_item(
+            item_id=data.get('item_id'),
+            cafe_id=data.get('cafe_id'),
+            quantity_added=data.get('quantity_added'),
+            date=data.get('restock_date')
+        )
+        return jsonify(result)
+    except Exception as e:
+        print(f"Error restocking item: {e}")
         return jsonify({"error": str(e)}), 500
 
 

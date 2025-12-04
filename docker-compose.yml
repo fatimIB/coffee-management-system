@@ -37,9 +37,11 @@ services:
       - .env
 
   analytics_service:
-    build: ./services/analytics_service
+    build:
+      context: .
+      dockerfile: ./services/analytics_service/Dockerfile
     volumes:
-     - ./services/analytics_service/proto:/app/proto
+     - ./shared_proto:/app/shared_proto
      - ./database:/app/database
     ports:
       - "5003:5003"
@@ -48,7 +50,7 @@ services:
     env_file:
       - .env
     environment:
-      - PYTHONPATH=/app
+      - PYTHONPATH=/app/shared_proto
 
   cafe_service:
     build: ./services/cafe_service
@@ -60,22 +62,36 @@ services:
       - .env
 
   menu_service:
-    build: ./services/menu_service
+    build:
+      context: .
+      dockerfile: ./services/menu_service/Dockerfile
+    volumes:
+     - ./shared_proto:/app/shared_proto
+     - ./database:/app/database
     ports:
       - "5005:5005"
     depends_on:
       - db
     env_file:
       - .env
+    environment:
+      - PYTHONPATH=/app/shared_proto
 
   inventory_service:
-    build: ./services/inventory_service
+    build:
+      context: .
+      dockerfile: ./services/inventory_service/Dockerfile
+    volumes:
+     - ./shared_proto:/app/shared_proto
+     - ./database:/app/database
     ports:
       - "5006:5006"
     depends_on:
       - db
     env_file:
       - .env
+    environment:
+      - PYTHONPATH=/app/shared_proto
 
   # Gateway
   gateway:
@@ -92,9 +108,9 @@ services:
     env_file:
       - .env
     volumes:
-      - ./services/analytics_service/proto:/app/proto
+      - ./shared_proto:/app/shared_proto
     environment:
-      - PYTHONPATH=/app
+      - PYTHONPATH=/app/shared_proto
 
   # Frontend
   frontend:

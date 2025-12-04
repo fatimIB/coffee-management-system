@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package inventory;
+
+// Définition du Service Inventaire écoutant sur le port 5006
+service InventoryService {
+  // Récupère la liste d'inventaire pour affichage dans le Frontend (Admin)
+  rpc GetInventoryByCafe(Empty) returns (InventoryListResponse);
+  
+  // Met à jour le stock après une commande (Appel interne par Order Service)
+  rpc UpdateInventoryAfterOrder(UpdateInventoryRequest) returns (UpdateInventoryResponse);
+  
+  // Gère le réapprovisionnement (Appel par la Gateway suite à l'action Admin)
+  rpc RestockItem(RestockItemRequest) returns (RestockItemResponse);
+}
+
+// --- Messages de Requête ---
+
+message Empty {}
+
+message UpdateInventoryRequest {
+  string item_id = 1;
+  string cafe_id = 2;
+  int32 quantity_ordered = 3;
+}
+
+message RestockItemRequest {
+  string item_id = 1;
+  string cafe_id = 2;
+  int32 quantity_added = 3;
+  string restock_date = 4; // Format YYYY-MM-DD
+}
+
+// --- Messages de Réponse ---
+
+message UpdateInventoryResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message RestockItemResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message InventoryItem {
+  string item_id = 1;
+  string cafe_id = 2;
+  string item_name = 3;
+  string cafe_name = 4;
+  int32 stock_quantity = 5;
+  string restock_date = 6;
+  bool is_low_stock = 7;
+}
+
+message InventoryListResponse {
+  repeated InventoryItem items = 1;
+}

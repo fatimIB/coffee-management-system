@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-from proto import analytics_pb2 as proto_dot_analytics__pb2
+from . import inventory_pb2 as inventory__pb2
 
 GRPC_GENERATED_VERSION = '1.76.0'
 GRPC_VERSION = grpc.__version__
@@ -18,16 +18,15 @@ except ImportError:
 if _version_not_supported:
     raise RuntimeError(
         f'The grpc package installed is at version {GRPC_VERSION},'
-        + ' but the generated code in proto/analytics_pb2_grpc.py depends on'
+        + ' but the generated code in inventory_pb2_grpc.py depends on'
         + f' grpcio>={GRPC_GENERATED_VERSION}.'
         + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
         + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
     )
 
 
-class AnalyticsServiceStub(object):
-    """------------ END NEW ------------ 
-
+class InventoryServiceStub(object):
+    """Définition du Service Inventaire écoutant sur le port 5006
     """
 
     def __init__(self, channel):
@@ -36,80 +35,80 @@ class AnalyticsServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.GetCardMetrics = channel.unary_unary(
-                '/analytics.AnalyticsService/GetCardMetrics',
-                request_serializer=proto_dot_analytics__pb2.MonthRequest.SerializeToString,
-                response_deserializer=proto_dot_analytics__pb2.CardMetrics.FromString,
+        self.GetInventoryByCafe = channel.unary_unary(
+                '/inventory.InventoryService/GetInventoryByCafe',
+                request_serializer=inventory__pb2.Empty.SerializeToString,
+                response_deserializer=inventory__pb2.InventoryListResponse.FromString,
                 _registered_method=True)
-        self.GetOverviewAnalytics = channel.unary_unary(
-                '/analytics.AnalyticsService/GetOverviewAnalytics',
-                request_serializer=proto_dot_analytics__pb2.MonthRequest.SerializeToString,
-                response_deserializer=proto_dot_analytics__pb2.OverviewAnalytics.FromString,
+        self.UpdateInventoryAfterOrder = channel.unary_unary(
+                '/inventory.InventoryService/UpdateInventoryAfterOrder',
+                request_serializer=inventory__pb2.UpdateInventoryRequest.SerializeToString,
+                response_deserializer=inventory__pb2.UpdateInventoryResponse.FromString,
                 _registered_method=True)
-        self.GetPredictions = channel.unary_unary(
-                '/analytics.AnalyticsService/GetPredictions',
-                request_serializer=proto_dot_analytics__pb2.PredictionRequest.SerializeToString,
-                response_deserializer=proto_dot_analytics__pb2.PredictionResponse.FromString,
+        self.RestockItem = channel.unary_unary(
+                '/inventory.InventoryService/RestockItem',
+                request_serializer=inventory__pb2.RestockItemRequest.SerializeToString,
+                response_deserializer=inventory__pb2.RestockItemResponse.FromString,
                 _registered_method=True)
 
 
-class AnalyticsServiceServicer(object):
-    """------------ END NEW ------------ 
-
+class InventoryServiceServicer(object):
+    """Définition du Service Inventaire écoutant sur le port 5006
     """
 
-    def GetCardMetrics(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+    def GetInventoryByCafe(self, request, context):
+        """Récupère la liste d'inventaire pour affichage dans le Frontend (Admin)
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def GetOverviewAnalytics(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+    def UpdateInventoryAfterOrder(self, request, context):
+        """Met à jour le stock après une commande (Appel interne par Order Service)
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def GetPredictions(self, request, context):
-        """NEW
+    def RestockItem(self, request, context):
+        """Gère le réapprovisionnement (Appel par la Gateway suite à l'action Admin)
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
 
-def add_AnalyticsServiceServicer_to_server(servicer, server):
+def add_InventoryServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'GetCardMetrics': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetCardMetrics,
-                    request_deserializer=proto_dot_analytics__pb2.MonthRequest.FromString,
-                    response_serializer=proto_dot_analytics__pb2.CardMetrics.SerializeToString,
+            'GetInventoryByCafe': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetInventoryByCafe,
+                    request_deserializer=inventory__pb2.Empty.FromString,
+                    response_serializer=inventory__pb2.InventoryListResponse.SerializeToString,
             ),
-            'GetOverviewAnalytics': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetOverviewAnalytics,
-                    request_deserializer=proto_dot_analytics__pb2.MonthRequest.FromString,
-                    response_serializer=proto_dot_analytics__pb2.OverviewAnalytics.SerializeToString,
+            'UpdateInventoryAfterOrder': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpdateInventoryAfterOrder,
+                    request_deserializer=inventory__pb2.UpdateInventoryRequest.FromString,
+                    response_serializer=inventory__pb2.UpdateInventoryResponse.SerializeToString,
             ),
-            'GetPredictions': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetPredictions,
-                    request_deserializer=proto_dot_analytics__pb2.PredictionRequest.FromString,
-                    response_serializer=proto_dot_analytics__pb2.PredictionResponse.SerializeToString,
+            'RestockItem': grpc.unary_unary_rpc_method_handler(
+                    servicer.RestockItem,
+                    request_deserializer=inventory__pb2.RestockItemRequest.FromString,
+                    response_serializer=inventory__pb2.RestockItemResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'analytics.AnalyticsService', rpc_method_handlers)
+            'inventory.InventoryService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('analytics.AnalyticsService', rpc_method_handlers)
+    server.add_registered_method_handlers('inventory.InventoryService', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
-class AnalyticsService(object):
-    """------------ END NEW ------------ 
-
+class InventoryService(object):
+    """Définition du Service Inventaire écoutant sur le port 5006
     """
 
     @staticmethod
-    def GetCardMetrics(request,
+    def GetInventoryByCafe(request,
             target,
             options=(),
             channel_credentials=None,
@@ -122,9 +121,9 @@ class AnalyticsService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/analytics.AnalyticsService/GetCardMetrics',
-            proto_dot_analytics__pb2.MonthRequest.SerializeToString,
-            proto_dot_analytics__pb2.CardMetrics.FromString,
+            '/inventory.InventoryService/GetInventoryByCafe',
+            inventory__pb2.Empty.SerializeToString,
+            inventory__pb2.InventoryListResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -136,7 +135,7 @@ class AnalyticsService(object):
             _registered_method=True)
 
     @staticmethod
-    def GetOverviewAnalytics(request,
+    def UpdateInventoryAfterOrder(request,
             target,
             options=(),
             channel_credentials=None,
@@ -149,9 +148,9 @@ class AnalyticsService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/analytics.AnalyticsService/GetOverviewAnalytics',
-            proto_dot_analytics__pb2.MonthRequest.SerializeToString,
-            proto_dot_analytics__pb2.OverviewAnalytics.FromString,
+            '/inventory.InventoryService/UpdateInventoryAfterOrder',
+            inventory__pb2.UpdateInventoryRequest.SerializeToString,
+            inventory__pb2.UpdateInventoryResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -163,7 +162,7 @@ class AnalyticsService(object):
             _registered_method=True)
 
     @staticmethod
-    def GetPredictions(request,
+    def RestockItem(request,
             target,
             options=(),
             channel_credentials=None,
@@ -176,9 +175,9 @@ class AnalyticsService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/analytics.AnalyticsService/GetPredictions',
-            proto_dot_analytics__pb2.PredictionRequest.SerializeToString,
-            proto_dot_analytics__pb2.PredictionResponse.FromString,
+            '/inventory.InventoryService/RestockItem',
+            inventory__pb2.RestockItemRequest.SerializeToString,
+            inventory__pb2.RestockItemResponse.FromString,
             options,
             channel_credentials,
             insecure,

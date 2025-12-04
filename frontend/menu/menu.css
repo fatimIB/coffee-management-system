@@ -1,0 +1,300 @@
+/* GENERAL LAYOUT */
+.container {
+    display: flex;
+    width: 95%;
+    margin: 0 auto;
+}
+
+.content {
+    margin-left: 230px;
+    padding: 20px;
+    background: #F1F1F1;
+    min-height: 100vh;
+    width: calc(100% - 230px);
+}
+
+/* ADD CARD */
+.add-card {
+    background: white;
+    padding: 25px;
+    margin: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 8px #ddd;
+}
+
+.add-card h2 {
+    margin-bottom: 20px;
+    color: #b36a2e;
+}
+
+/* ROW FOR INPUTS */
+.add-card .row {
+    display: flex;
+    width: 100%;
+    gap: 15px;
+}
+
+/* Inputs in row */
+.add-card input,
+.add-card select {
+    flex: 1;
+    padding: 12px 14px;
+    border: 1px solid #d3d3d3;
+    border-radius: 10px;
+    background: #fffdf7;
+    font-size: 15px;
+    outline: none;
+    transition: 0.25s;
+}
+
+.add-card input:focus,
+.add-card select:focus {
+    border-color: #b36a2e;
+    box-shadow: 0 0 5px rgba(179, 106, 46, 0.4);
+}
+
+/* ADD button */
+#add-btn {
+    width: 100px;
+    padding: 7px;
+    margin-top: 15px;
+    background: #b36a2e;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    float: right; 
+}
+
+#add-btn:hover {
+    background: #9a5a25;
+}
+.add-card::after {
+    content: "";
+    display: block;
+    clear: both;   
+}
+
+/* SEARCH BAR */
+.search-wrapper {
+    margin: 20px 25px;
+    text-align: center;
+}
+
+#search {
+    width: 40%;
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    background: #fafafa;
+    font-size: 15px;
+    transition: 0.3s ease;
+}
+
+/* Hover effect */
+#search:hover {
+    background: #fff8ef;
+    border-color: #b36a2e;
+    box-shadow: 0 0 6px rgba(179, 106, 46, 0.3);
+}
+
+/* Focus effect (when typing) */
+#search:focus {
+    background: #fff4e6;
+    border-color: #b36a2e;
+    outline: none;
+    box-shadow: 0 0 8px rgba(179, 106, 46, 0.4);
+}
+
+/* TABLE CARD */
+.table-card {
+    background: white;
+    padding: 20px;
+    margin: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 8px #ddd;
+}
+
+.table-card h2 {
+    margin-bottom: 20px;
+    color: #b36a2e;
+}
+
+/* TABLE STYLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+thead tr {
+    background: #a66a3d;
+    color: white;
+}
+
+td, th {
+    padding: 10px;
+}
+
+tbody tr:nth-child(odd) {
+    background: #fff9dd;
+}
+
+tbody tr:nth-child(even) {
+    background: #fff;
+}
+
+/* ACTION BUTTONS */
+.edit-btn {
+    padding: 8px 15px;
+    background: #b36a2e;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    margin-right: 8px;
+}
+
+.edit-btn:hover {
+    background: #9a5a25;
+}
+
+.delete-btn {
+    padding: 8px 15px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background: #c82333;
+}
+
+/* TABLE INFO */
+.table-info {
+    margin-bottom: 15px;
+    color: #666;
+    font-size: 14px;
+}
+
+/* PAGINATION */
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.page-btn {
+    padding: 8px 12px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    transition: 0.3s;
+}
+
+.page-btn:hover:not(.disabled):not(.active) {
+    background: #f0f0f0;
+    border-color: #b36a2e;
+}
+
+.page-btn.active {
+    background: #b36a2e;
+    color: white;
+    border-color: #b36a2e;
+}
+
+.page-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.page-ellipsis {
+    padding: 0 8px;
+    color: #666;
+}
+/* MODAL OVERLAY */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* MODAL BOX */
+.modal-box {
+    background: #fff9e8;
+    width: 350px;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    text-align: center;
+    animation: popup 0.25s ease;
+}
+
+@keyframes popup {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal-box h3 {
+    margin-bottom: 10px;
+    color: #b36a2e;
+}
+
+.modal-box p {
+    color: #444;
+    margin-bottom: 20px;
+}
+
+/* BUTTONS */
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.modal-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    transition: 0.3s ease;
+}
+
+/* CANCEL BUTTON */
+.modal-btn.cancel {
+    background: #ddd;
+    color: #333;
+}
+
+.modal-btn.cancel:hover {
+    background: #cfcfcf;
+}
+
+/* CONFIRM DELETE BUTTON */
+.modal-btn.confirm {
+    background: #dc3545;
+    color: white;
+}
+
+.modal-btn.confirm:hover {
+    background: #c82333;
+}
+

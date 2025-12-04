@@ -1,29 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Stock - Cafe Management System</title>
+    <link rel="stylesheet" href="inventory.css">
+    <script src="inventory.js"></script>
 </head>
+
 <body>
-       <div id="sidebar-container"></div>
+    <div id="sidebar-container"></div>
     <main>
-        stock
+        <div class="container">
+            <div class="content">
+                <div class="Edit-stock-card">
+                    <h2 class="stockh1">Current Inventory</h2>
+                    <div class="filters-row">
+                        <input type="text" id="searchInput" placeholder="Search items" class="search-input">
+                        <select id="cafeFilter" class="cafe-filter">
+                            <option value="">All Cafes</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="lowStockAlerts" class="alerts-container"></div>
+                <div class="table-card">
+                    <table class="stock-table">
+                        <h2>Inventory Items</h2>
+
+                        <div class="table-info">
+                            <span id="table-info">Showing 0 items</span>
+                        </div>
+                        <thead>
+                            <tr>
+                                <th>Item Name</th>
+                                <th>Cafe</th>
+                                <th>Stock</th>
+                                <th>Restock</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTableBody">
+                        </tbody>
+                    </table>
+                    <div class="pagination" id="pagination"></div>
+                </div>
+            </div>
+
+            <div id="restockModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-btn">&times;</span>
+                    <h2>Restock <span id="modalItemName"></span></h2>
+
+                    <label>Operation Type:</label>
+                    <div class="operation-toggle">
+                        <label>
+                            <input type="radio" name="restockOperation" value="add" checked>
+                            Add Quantity
+                        </label>
+                        <label>
+                            <input type="radio" name="restockOperation" value="subtract">
+                            Subtract Quantity
+                        </label>
+                    </div>
+
+                    <label for="restockQuantity"></label>
+                    <input type="number" id="restockQuantity" value="100" min="1">
+
+                    <label for="restockDate">Restock Date:</label>
+                    <input type="date" id="restockDate" required>
+
+                    <input type="hidden" id="modalItemId">
+                    <input type="hidden" id="modalCafeId">
+
+                    <button id="saveRestockBtn">Save Restock</button>
+                    <p id="modalMessage" style="color: green;"></p>
+                </div>
+            </div>
     </main>
+
 </body>
 <script>
     // Load sidebar.html into the container
     fetch("../shared/sidebar.html")
-      .then(response => response.text())
-      .then(data => {
-         document.getElementById("sidebar-container").innerHTML = `
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("sidebar-container").innerHTML = `
       <link rel="stylesheet" href="../shared/sidebar_style.css">
       ${data}
     `;
-     const script = document.createElement("script");
-      script.src = "../shared/sidebar.js";
-      document.body.appendChild(script);
-      })
-      .catch(error => console.error("Error loading sidebar:", error));
-  </script>
+            const script = document.createElement("script");
+            script.src = "../shared/sidebar.js";
+            document.body.appendChild(script);
+        })
+        .catch(error => console.error("Error loading sidebar:", error));
+</script>
+
 </html>
