@@ -1,6 +1,7 @@
-flask
-grpcio
+flask==3.0.0
+grpcio>=1.62.0
+grpcio-tools>=1.62.0
 mysql-connector-python
 python-dotenv
-protobuf
+protobuf>=5.0.0
 Flask-Cors

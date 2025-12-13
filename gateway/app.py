@@ -4,6 +4,7 @@ from flask_cors import CORS  # import CORS
 from collections import defaultdict
 import math
 from grpc_clients.menu_client import get_menu_items, add_menu_item, update_menu_item, delete_menu_item
+from grpc_clients.order_client import create_order, get_orders_by_cafe
 from dotenv import load_dotenv
 
 # Load env variables
@@ -207,6 +208,35 @@ def restock_item():
         print(f"Error restocking item: {e}")
         return jsonify({"error": str(e)}), 500
 
+# -------- ORDER API --------
+@app.route('/orders/create', methods=['POST'])
+def api_create_order():
+    try:
+        data = request.json
+        if not data or 'cafe_id' not in data or 'items' not in data:
+            return jsonify({"success": False, "message": "Missing cafe_id or items"}), 400
+        
+        result = create_order(data['cafe_id'], data['items'])
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+
+@app.route('/orders/<cafe_id>', methods=['GET'])
+def api_get_orders(cafe_id):
+    try:
+        orders = get_orders_by_cafe(cafe_id)
+        return jsonify({"orders": orders})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# -------- MENU API (for orders page) --------
+@app.route('/menu/items', methods=['GET'])
+def api_menu_items():
+    try:
+        items = get_menu_items()
+        return jsonify({"items": items})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

@@ -1,7 +1,8 @@
-flask
-grpcio
+flask==3.0.0
+grpcio>=1.62.0
+grpcio-tools>=1.62.0
 mysql-connector-python
 python-dotenv
-pandas 
+pandas==2.1.4
 scikit-learn
-protobuf
+protobuf>=5.0.0

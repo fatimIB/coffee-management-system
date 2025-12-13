@@ -20,7 +20,7 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `coffee_management_system`
 --
-CREATE DATABASE IF NOT EXISTS `coffee_management_system` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+CREATE DATABASE IF NOT EXISTS `coffee_management_system` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `coffee_management_system`;
 
 -- --------------------------------------------------------
@@ -38,7 +38,7 @@ CREATE TABLE `analytics_logs` (
   `quantity` int NOT NULL,
   `total_price` decimal(10,2) NOT NULL,
   `timestamp` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `analytics_logs`
@@ -206,7 +206,7 @@ CREATE TABLE `cafes` (
   `name` varchar(100) NOT NULL,
   `location` varchar(100) NOT NULL,
   `access_code` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `cafes`
@@ -230,7 +230,7 @@ CREATE TABLE `inventory` (
   `cafe_id` int NOT NULL,
   `stock` int NOT NULL,
   `restock_date` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `inventory`
@@ -301,7 +301,7 @@ CREATE TABLE `menu_items` (
   `name` varchar(100) NOT NULL,
   `category` varchar(50) NOT NULL,
   `price` decimal(10,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `menu_items`
@@ -338,7 +338,7 @@ CREATE TABLE `orders` (
   `cafe_id` int NOT NULL,
   `total_price` decimal(10,2) NOT NULL,
   `created_at` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `orders`
@@ -418,7 +418,7 @@ CREATE TABLE `order_items` (
   `item_id` int NOT NULL,
   `quantity` int NOT NULL,
   `price` decimal(10,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `order_items`

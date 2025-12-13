@@ -1,9 +1,7 @@
-version: '3.8'
-
 services:
   # Database
   db:
-    image: mysql:8.0
+    image: mariadb:10.11
     container_name: coffee_db
     restart: always
     env_file:
@@ -28,13 +26,20 @@ services:
       - .env
 
   order_service:
-    build: ./services/order_service
+    build:
+      context: .
+      dockerfile: ./services/order_service/Dockerfile
+    volumes:
+     - ./shared_proto:/app/shared_proto
+     - ./database:/app/database
     ports:
       - "5002:5002"
     depends_on:
       - db
     env_file:
       - .env
+    environment:
+      - PYTHONPATH=/app/shared_proto
 
   analytics_service:
     build:
