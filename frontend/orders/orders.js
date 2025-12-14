@@ -1,7 +1,8 @@
 // Get cafe_id from session (set during login)
 let cafeId = sessionStorage.getItem('cafe_id');
 if (!cafeId) {
-    // If not logged in, redirect to login
+    // If not logged in, store the current page and redirect to login
+    sessionStorage.setItem('redirect_after_login', window.location.pathname);
     window.location.href = '../login/index.html';
 }
 

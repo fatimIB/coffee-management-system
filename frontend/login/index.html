@@ -3,9 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login - Coffee Management System</title>
+    <link rel="stylesheet" href="login.css">
 </head>
 <body>
-    login frontend
+    <div class="login-container">
+        <div class="login-card">
+            <h1>☕ Coffee Management System</h1>
+            <h2>Login</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="access-code">Access Code</label>
+                    <input 
+                        type="text" 
+                        id="access-code" 
+                        name="access-code" 
+                        placeholder="Enter your cafe access code"
+                        required
+                        autofocus
+                    />
+                </div>
+                <div id="error-message" class="error-message" style="display: none;"></div>
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+            <div class="info-box">
+                <p><strong>Available Access Codes:</strong></p>
+                <ul>
+                    <li>DK456 - Café Dakhla</li>
+                    <li>SL789 - Café Salam</li>
+                    <li>AG123 - Agadir Bay Café</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="login.js"></script>
 </body>
 </html>

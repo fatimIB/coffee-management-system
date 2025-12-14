@@ -100,7 +100,9 @@ services:
 
   # Gateway
   gateway:
-    build: ./gateway
+    build:
+      context: .
+      dockerfile: ./gateway/Dockerfile
     ports:
       - "5000:5000"
     depends_on:
@@ -114,6 +116,7 @@ services:
       - .env
     volumes:
       - ./shared_proto:/app/shared_proto
+      - ./database:/app/database
     environment:
       - PYTHONPATH=/app/shared_proto
 

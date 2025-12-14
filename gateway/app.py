@@ -6,6 +6,7 @@ import math
 from grpc_clients.menu_client import get_menu_items, add_menu_item, update_menu_item, delete_menu_item
 from grpc_clients.order_client import create_order, get_orders_by_cafe
 from dotenv import load_dotenv
+from database.db_connection import get_connection
 
 # Load env variables
 load_dotenv()
@@ -237,6 +238,41 @@ def api_menu_items():
         return jsonify({"items": items})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+# -------- LOGIN API --------
+@app.route('/api/login', methods=['POST'])
+def api_login():
+    try:
+        data = request.json
+        if not data or 'access_code' not in data:
+            return jsonify({"success": False, "message": "Missing access_code"}), 400
+        
+        access_code = data['access_code']
+        conn = get_connection()
+        if not conn:
+            return jsonify({"success": False, "message": "Database connection failed"}), 500
+        
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute(
+            "SELECT cafe_id, name, location FROM cafes WHERE access_code = %s",
+            (access_code,)
+        )
+        cafe = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        
+        if cafe:
+            return jsonify({
+                "success": True,
+                "cafe_id": cafe['cafe_id'],
+                "cafe_name": cafe['name'],
+                "location": cafe['location']
+            })
+        else:
+            return jsonify({"success": False, "message": "Invalid access code"}), 401
+            
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
