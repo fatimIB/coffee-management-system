@@ -28,13 +28,20 @@ services:
       - .env
 
   order_service:
-    build: ./services/order_service
+    build:
+      context: .
+      dockerfile: ./services/order_service/Dockerfile
+    volumes:
+     - ./shared_proto:/app/shared_proto
+     - ./database:/app/database
     ports:
       - "5002:5002"
     depends_on:
       - db
     env_file:
       - .env
+    environment:
+      - PYTHONPATH=/app/shared_proto
 
   analytics_service:
     build:
@@ -116,6 +123,7 @@ services:
       - .env
     volumes:
       - ./shared_proto:/app/shared_proto
+      - ./database:/app/database
     environment:
       - PYTHONPATH=/app/shared_proto
 

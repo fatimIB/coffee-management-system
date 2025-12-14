@@ -1,11 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Orders</title>
+
+    <!-- Boxicons -->
+    <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet">
+
+    <!-- Shared sidebar -->
+    <link rel="stylesheet" href="../shared/sidebar_style.css">
+
+    <!-- Orders CSS -->
+    <link rel="stylesheet" href="orders.css">
 </head>
+
 <body>
-    orders frontend
+    <div id="sidebar-container"></div>
+
+    <div class="container">
+        <div class="content">
+            <h1>Create Order</h1>
+
+            <!-- Menu Items Selection -->
+            <div class="menu-section">
+                <h2>Select Items</h2>
+                <div id="menu-items" class="menu-grid"></div>
+            </div>
+
+            <!-- Selected Items Cart -->
+            <div class="cart-section">
+                <h2>Order Cart</h2>
+                <div id="cart-items" class="cart-items"></div>
+                <div class="cart-total">
+                    <strong>Total: <span id="total-price">0.00</span> MAD</strong>
+                </div>
+                <button id="confirm-order-btn" class="confirm-btn" disabled>Confirm Order</button>
+            </div>
+
+            <!-- Success/Error Messages -->
+            <div id="message" class="message"></div>
+        </div>
+    </div>
+
+    <script src="orders.js"></script>
 </body>
+
 </html>
