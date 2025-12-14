@@ -1,0 +1,252 @@
+/* ======================================================= */
+/* GENERAL LAYOUT (MATCH MENU & INVENTORY)                 */
+/* ======================================================= */
+
+
+.container {
+    display: flex;
+    width: 90%;
+    margin-top: 30px;
+    margin-left: 60px;
+}
+
+.content {
+    margin-left: 230px;
+    padding: 20px;
+    background: #F1F1F1;
+    min-height: 100vh;
+    width: calc(100% - 230px);
+}
+
+/* ======================================================= */
+/* ADD CAFE CARD                                          */
+/* ======================================================= */
+
+.form-section {
+    background: white;
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 8px #ddd;
+}
+
+.form-section h2 {
+    margin-bottom: 20px;
+    color: #b36a2e;
+}
+
+/* INPUT ROW (same as menu .row) */
+.form-row {
+    display: flex;
+    width: 100%;
+    gap: 15px;
+}
+
+/* INPUTS */
+.form-group {
+    flex: 1;
+}
+
+.form-group label {
+    display: none; /* Menu page doesn't show labels */
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d3d3d3;
+    border-radius: 10px;
+    background: #fffdf7;
+    font-size: 15px;
+    outline: none;
+    transition: 0.25s;
+}
+
+.form-group input:focus {
+    border-color: #b36a2e;
+    box-shadow: 0 0 5px rgba(179, 106, 46, 0.4);
+}
+
+/* ADD BUTTON (same as menu add button) */
+#submit-btn {
+    width: 120px;
+    padding: 8px;
+    margin-top: 15px;
+    background: #b36a2e;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    float: right;
+}
+#cancel-btn {
+    width: 120px;
+    padding: 8px;
+    margin-top: 15px;
+    background: #ddd;
+    color: #333;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    float: right;
+    margin-right: 5px;
+}
+#submit-btn:hover {
+    background: #9a5a25;
+}
+
+
+/* Clear float */
+.form-section::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+/* ======================================================= */
+/* TABLE CARD (MATCH MENU & INVENTORY)                     */
+/* ======================================================= */
+
+.list-section {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 8px #ddd;
+}
+
+.list-section h2 {
+    margin-bottom: 20px;
+    color: #b36a2e;
+}
+
+/* TABLE */
+.cafe-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.cafe-table thead tr {
+    background: #a66a3d;
+    color: white;
+}
+
+.cafe-table th,
+.cafe-table td {
+    padding: 10px;
+    text-align: left;
+}
+
+.cafe-table tbody tr:nth-child(odd) {
+    background: #fff9dd;
+}
+
+.cafe-table tbody tr:nth-child(even) {
+    background: #fff;
+}
+
+/* ACTION BUTTONS */
+.edit-btn {
+    padding: 8px 15px;
+    background: #b36a2e;
+    color: white;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.edit-btn:hover {
+    background: #9a5a25;
+}
+
+.delete-btn {
+    padding: 8px 15px;
+    background: #dc3545;
+    color: white;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background: #c82333;
+}
+
+/* ======================================================= */
+/* MOBILE                                                 */
+/* ======================================================= */
+
+@media (max-width: 768px) {
+    .content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .form-row {
+        flex-direction: column;
+    }
+}
+
+/* ================= MODAL (SAME AS MENU) ================= */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-box {
+    background: #fff9e8;
+    width: 350px;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    text-align: center;
+    animation: popup 0.25s ease;
+}
+
+@keyframes popup {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal-box h3 {
+    margin-bottom: 10px;
+    color: #b36a2e;
+}
+
+.modal-box p {
+    color: #444;
+    margin-bottom: 20px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.modal-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.modal-btn.cancel {
+    background: #ddd;
+    color: #333;
+}
+
+.modal-btn.confirm {
+    background: #dc3545;
+    color: white;
+}

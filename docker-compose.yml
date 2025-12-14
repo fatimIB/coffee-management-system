@@ -53,13 +53,20 @@ services:
       - PYTHONPATH=/app/shared_proto
 
   cafe_service:
-    build: ./services/cafe_service
+    build: 
+      context: .
+      dockerfile: ./services/cafe_service/Dockerfile
+    volumes:
+     - ./shared_proto:/app/shared_proto
+     - ./database:/app/database
     ports:
       - "5004:5004"
     depends_on:
       - db
     env_file:
       - .env
+    environment:
+      - PYTHONPATH=/app/shared_proto
 
   menu_service:
     build:

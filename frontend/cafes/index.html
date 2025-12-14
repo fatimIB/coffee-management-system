@@ -1,30 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Cafe Management</title>
+    <link rel="stylesheet" href="cafes.css">
 </head>
-<body>
-      <div id="sidebar-container"></div>
-    <main>
-        cafe
-    </main>
-</body>
 
+<body>
+    <div id="sidebar-container"></div>
+
+    <div class="container">
+        <div class="content">
+            <!-- Add/Edit Form -->
+            <div class="form-section">
+                <h2 id="form-title">Add New Cafe</h2>
+                <form id="cafe-form">
+                    <input type="hidden" id="cafe-id">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nom">Name</label>
+                            <input type="text" id="nom" placeholder="Cafe Name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="localisation">Location</label>
+                            <input type="text" id="localisation" placeholder="Cafe Location" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="code-acces">Code</label>
+                            <input type="text" id="code-acces" placeholder="XXXX" required>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" id="submit-btn">Add Cafe</button>
+                        <button type="button" id="cancel-btn" style="display: none;">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="separator"></div>
+
+            <!-- Cafe List -->
+            <div class="list-section">
+                <h2>Cafes</h2>
+                <div class="table-container">
+                    <table class="cafe-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Location</th>
+                                <th>Code</th>
+                                <th class="actions-header">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cafe-table-body">
+                            <!-- Cafes will be dynamically loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="cafe-cards" class="cafe-cards">
+                    <!-- Mobile version -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3>Are you sure?</h3>
+            <p>This cafe will be permanently deleted.</p>
+
+            <div class="modal-actions">
+                <button id="cancel-delete" class="modal-btn cancel">Cancel</button>
+                <button id="confirm-delete" class="modal-btn confirm">Delete</button>
+            </div>
+        </div>
+    </div>
+
+</body>
 <script>
-    // Load sidebar.html into the container
+    // Load sidebar
     fetch("../shared/sidebar.html")
-      .then(response => response.text())
-      .then(data => {
-         document.getElementById("sidebar-container").innerHTML = `
-      <link rel="stylesheet" href="../shared/sidebar_style.css">
-      ${data}
-    `;
-     const script = document.createElement("script");
-      script.src = "../shared/sidebar.js";
-      document.body.appendChild(script);
-      })
-      .catch(error => console.error("Error loading sidebar:", error));
-  </script>
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("sidebar-container").innerHTML = `
+          <link rel="stylesheet" href="../shared/sidebar_style.css">
+          ${data}
+        `;
+            const script = document.createElement("script");
+            script.src = "../shared/sidebar.js";
+            document.body.appendChild(script);
+        })
+        .catch(error => console.error("Error loading sidebar:", error));
+</script>
+<script src="cafes.js"></script>
+
 </html>

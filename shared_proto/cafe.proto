@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package cafe;
+
+service CafeService {
+    rpc GetAllCafes (Empty) returns (CafeListResponse);
+    rpc CreateCafe (CafeCreateRequest) returns (CafeResponse);
+    rpc UpdateCafe (CafeUpdateRequest) returns (CafeResponse);
+    rpc DeleteCafe (CafeDeleteRequest) returns (CafeResponse);
+    rpc VerifyCafeCode (CafeVerifyCodeRequest) returns (CafeVerifyCodeResponse);
+}
+
+message Empty {}
+
+message Cafe {
+    int32 id = 1;
+    string nom = 2;
+    string localisation = 3;
+    string code_acces = 4;
+}
+
+message CafeListResponse {
+    repeated Cafe cafes = 1;
+}
+
+message CafeCreateRequest {
+    string nom = 1;
+    string localisation = 2;
+    string code_acces = 3;
+}
+
+message CafeUpdateRequest {
+    int32 id = 1;
+    string nom = 2;
+    string localisation = 3;
+    string code_acces = 4;
+}
+
+message CafeDeleteRequest {
+    int32 id = 1;
+}
+
+message CafeResponse {
+    bool success = 1;
+    string message = 2;
+    int32 id = 3;
+    string nom = 4;
+    string localisation = 5;
+    string code_acces = 6;
+}
+
+message CafeVerifyCodeRequest {
+    string code_acces = 1;
+}
+
+message CafeVerifyCodeResponse {
+    bool success = 1;
+    string message = 2;
+    int32 cafe_id = 3;
+    string nom = 4;
+    string localisation = 5;
+}

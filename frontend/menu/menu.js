@@ -102,6 +102,7 @@ async function loadMenu(search = "") {
     renderPagination(totalPages);
   } catch (err) {
     console.error("Error loading menu:", err);
+    showMessage(`Error: ${err.message}`, "error");
     menuTable.innerHTML = `<tr><td colspan="4" style="color:red;text-align:center;">Error: ${err.message}</td></tr>`;
   }
 }
@@ -120,7 +121,7 @@ async function handleAddUpdate() {
   const category = categoryInput.value;
   const price = parseFloat(priceInput.value);
   if (!name || !category || isNaN(price) || price <= 0) {
-    alert("Please fill in all fields with valid values");
+    showMessage("Please fill in all fields with valid values", "error");
     return;
   }
 
@@ -131,6 +132,7 @@ async function handleAddUpdate() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: editId, name, category, price }),
       });
+      showMessage("Item updated successfully", "success");
       editId = null;
       addBtn.innerText = "ADD";
     } else {
@@ -139,12 +141,13 @@ async function handleAddUpdate() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, category, price }),
       });
+      showMessage("Item added successfully", "success");
     }
     nameInput.value = categoryInput.value = priceInput.value = "";
     loadMenu(searchInput.value);
   } catch (err) {
     console.error(err);
-    alert(`Error: ${err.message}`);
+    showMessage(`Error: ${err.message}`, "error");
   }
 }
 
@@ -176,10 +179,11 @@ async function deleteItem(id) {
       body: JSON.stringify({ id }),
     });
     if (!res.ok) throw new Error("Error deleting item");
+    showMessage("Item deleted successfully", "success");
     loadMenu(searchInput.value);
   } catch (err) {
     console.error(err);
-    alert(`Error: ${err.message}`);
+    showMessage(`Error: ${err.message}`, "error");
   }
 }
 
@@ -220,3 +224,28 @@ function goToPage(page) {
   document.querySelector(".table-card").scrollIntoView({ behavior: "smooth" });
 }
 window.goToPage = goToPage;
+
+// --- Success/Error Popup Function ---
+function showMessage(message, type) {
+  const messageDiv = document.createElement('div');
+  messageDiv.textContent = message;
+  messageDiv.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    z-index: 1000;
+    transition: opacity 0.3s;
+    background-color: ${type === 'success' ? '#28a745' : '#dc3545'};
+  `;
+  document.body.appendChild(messageDiv);
+  setTimeout(() => {
+    messageDiv.style.opacity = '0';
+    setTimeout(() => {
+      if (document.body.contains(messageDiv)) document.body.removeChild(messageDiv);
+    }, 300);
+  }, 3000);
+}

@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from grpc_clients import analytics_client, inventory_client
+from grpc_clients import analytics_client, inventory_client, cafe_client
 from flask_cors import CORS  # import CORS
 from collections import defaultdict
 import math
@@ -206,6 +206,103 @@ def restock_item():
     except Exception as e:
         print(f"Error restocking item: {e}")
         return jsonify({"error": str(e)}), 500
+
+
+
+# --------------------- CAFES ---------------------
+@app.route('/api/cafes', methods=['GET'])
+def get_all_cafes():
+    try:
+        response = cafe_client.get_all_cafes()
+        cafes = [{
+            'id': c.id,
+            'name': c.nom,
+            'location': c.localisation,
+            'access_code': c.code_acces
+        } for c in response.cafes]
+        return jsonify({'success': True, 'cafes': cafes})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/cafes', methods=['POST'])
+def create_cafe():
+    try:
+        data = request.get_json()
+        response = cafe_client.create_cafe(
+            data['name'],
+            data['location'],
+            data['access_code']
+        )
+        if response.success:
+            return jsonify({
+                'success': True,
+                'message': response.message,
+                'cafe': {
+                    'id': response.id,
+                    'name': response.nom,
+                    'location': response.localisation,
+                    'access_code': response.code_acces
+                }
+            })
+        else:
+            return jsonify({'success': False, 'error': response.message}), 400
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/cafes/<int:cafe_id>', methods=['PUT'])
+def update_cafe(cafe_id):
+    try:
+        data = request.get_json()
+        response = cafe_client.update_cafe(
+            cafe_id,
+            data['name'],
+            data['location'],
+            data['access_code']
+        )
+        if response.success:
+            return jsonify({
+                'success': True,
+                'message': response.message,
+                'cafe': {
+                    'id': response.id,
+                    'name': response.nom,
+                    'location': response.localisation,
+                    'access_code': response.code_acces
+                }
+            })
+        else:
+            return jsonify({'success': False, 'error': response.message}), 400
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/cafes/<int:cafe_id>', methods=['DELETE'])
+def delete_cafe(cafe_id):
+    try:
+        response = cafe_client.delete_cafe(cafe_id)
+        if response.success:
+            return jsonify({'success': True, 'message': response.message})
+        else:
+            return jsonify({'success': False, 'error': response.message}), 400
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/cafes/verify-code', methods=['POST'])
+def verify_cafe_code():
+    try:
+        data = request.get_json()
+        response = cafe_client.verify_cafe_code(data['access_code'])
+        return jsonify({
+            'valid': response.success,
+            'message': response.message,
+            'cafe': {
+                'id': response.cafe_id,
+                'name': getattr(response, 'nom', ''),
+                'location': getattr(response, 'localisation', ''),
+                'access_code': data['access_code']
+            } if response.success else None
+        })
+    except Exception as e:
+        return jsonify({'valid': False, 'error': str(e)}), 500
 
 
 if __name__ == "__main__":
