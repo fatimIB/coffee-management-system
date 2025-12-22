@@ -3,9 +3,6 @@ grpcio
 mysql-connector-python
 python-dotenv
 protobuf
-Flask-Cors
 bcrypt
 psycopg2-binary
-flask-socketio
-python-socketio
-eventlet
+Flask-Cors

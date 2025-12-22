@@ -1,7 +1,10 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, session, redirect
 from grpc_clients import analytics_client, inventory_client, cafe_client
+from grpc_clients.adminlogin import AdminLoginClient
+from grpc_clients.login_client import LoginClient
 from flask_cors import CORS  # import CORS
 from collections import defaultdict
+import bcrypt
 import math
 from grpc_clients.menu_client import get_menu_items, add_menu_item, update_menu_item, delete_menu_item
 from grpc_clients.order_client import create_order, get_orders_by_cafe
@@ -11,9 +14,105 @@ from database.db_connection import get_connection
 # Load env variables
 load_dotenv()
 
-app = Flask(__name__)
-CORS(app)  # Enable
 
+
+app = Flask(__name__)
+CORS(
+    app,
+    supports_credentials=True,
+    origins=[
+        "http://localhost:8080",
+        "http://127.0.0.1:8080"
+    ] 
+) 
+
+app.secret_key = 'cafe-management-secret-2025'
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="None",  
+    SESSION_COOKIE_SECURE=True     
+)
+login_client = LoginClient()
+admin_client = AdminLoginClient() 
+
+# --- Admin login ---
+@app.route("/adminlogin", methods=["POST"])
+def adminlogin():
+    data = request.json
+    username = data.get("username")
+    password = data.get("password")
+
+    if not username or not password:
+        return jsonify({"success": False, "message": "Username and password required"}), 400
+
+    try:
+        # Call gRPC service
+        result = admin_client.login(username, password)
+        if result["success"]:
+            session["admin_id"] = result["admin_id"]
+            session["username"] = username
+            return jsonify({"success": True})
+        else:
+            return jsonify({"success": False, "message": result.get("message", "Invalid credentials")}), 401
+    except Exception as e:
+        return jsonify({"success": False, "message": f"Server error: {str(e)}"}), 500
+
+# --- Dashboard route ---
+@app.route("/dashboard/index.html")
+def dashboard():
+    if "admin_id" not in session:
+        return redirect("/adminlogin/index.html")
+    return app.send_static_file("dashboard/index.html")
+
+# --- Logout route ---
+@app.route("/adminlogout", methods=["POST"])
+def admin_logout():
+    session.clear()
+    return jsonify({
+        "success": True,
+        "message": "Logged out successfully"
+    }), 200
+
+
+@app.route("/api/admin/session", methods=["GET"])
+def check_admin_session():
+    if "admin_id" in session:
+        return jsonify({
+            "authenticated": True,
+            "admin_id": session.get("admin_id"),
+            "username": session.get("username")
+        }), 200
+
+    return jsonify({
+        "authenticated": False
+    }), 401
+
+
+@app.route("/api/admin/update", methods=["POST"])
+def update_admin():
+    if "admin_id" not in session:
+        return jsonify({"success": False, "message": "Unauthorized"}), 401
+
+    data = request.json
+    username = data.get("username")
+    password = data.get("password")
+
+    try:
+        result = admin_client.update_admin_info(
+            admin_id=session["admin_id"],
+            username=username,
+            password=password
+        )
+        if result["success"]:
+            if username:
+                session["username"] = username  # update session
+            return jsonify({"success": True, "message": result["message"]})
+        return jsonify(result), 400
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+# --- Analytics servivce ---
 
 @app.route('/analytics', methods=['GET'])
 def get_analytics():
@@ -337,40 +436,79 @@ def api_menu_items():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# -------- LOGIN API --------
-@app.route('/api/login', methods=['POST'])
-def api_login():
+
+
+# Routes for Login
+@app.route('/api/login/cafes', methods=['GET'])
+def get_cafes():
+    """Récupérer la liste des cafés pour le dropdown"""
     try:
-        data = request.json
-        if not data or 'access_code' not in data:
-            return jsonify({"success": False, "message": "Missing access_code"}), 400
-        
-        access_code = data['access_code']
-        conn = get_connection()
-        if not conn:
-            return jsonify({"success": False, "message": "Database connection failed"}), 500
-        
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute(
-            "SELECT cafe_id, name, location FROM cafes WHERE access_code = %s",
-            (access_code,)
-        )
-        cafe = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        
-        if cafe:
-            return jsonify({
-                "success": True,
-                "cafe_id": cafe['cafe_id'],
-                "cafe_name": cafe['name'],
-                "location": cafe['location']
-            })
-        else:
-            return jsonify({"success": False, "message": "Invalid access code"}), 401
-            
+        cafes = login_client.get_all_cafes()
+        return jsonify({
+            'success': True,
+            'cafes': cafes
+        }), 200
     except Exception as e:
-        return jsonify({"success": False, "message": str(e)}), 500
+        return jsonify({
+            'success': False,
+            'message': f'Erreur: {str(e)}'
+        }), 500
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    """Authentifier un café"""
+    try:
+        data = request.get_json()
+        cafe_id = data.get('cafe_id')
+        access_code = data.get('access_code')
+        
+        if not cafe_id or not access_code:
+            return jsonify({
+                'success': False,
+                'message': 'Café et code requis'
+            }), 400
+        
+        result = login_client.authenticate_cafe(
+            cafe_id=int(cafe_id),
+            access_code=access_code
+        )
+        
+        if result['success']:
+            session['cafe_id'] = result['cafe_id']
+            session['cafe_name'] = result['cafe_name']
+            session['is_authenticated'] = True
+        
+        return jsonify(result), 200 if result['success'] else 401
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': f'Erreur: {str(e)}'
+        }), 500
+
+@app.route('/api/userlogout', methods=['POST'])
+def user_logout():
+    """Déconnexion"""
+    session.clear()
+    return jsonify({
+        'success': True,
+        'message': 'Déconnexion réussie'
+    }), 200
+
+@app.route('/api/session', methods=['GET'])
+def get_session():
+    """Vérifier si l'utilisateur est connecté"""
+    if session.get('is_authenticated'):
+        return jsonify({
+            'authenticated': True,
+            'cafe_id': session.get('cafe_id'),
+            'cafe_name': session.get('cafe_name')
+        }), 200
+    else:
+        return jsonify({
+            'authenticated': False
+        }), 200
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

@@ -1,13 +1,30 @@
 // dashboard.js
+(async function protectDashboard() {
+  try {
+    const response = await fetch("http://localhost:5000/api/admin/session", {
+      method: "GET",
+      credentials: "include"
+    });
+
+    if (!response.ok) {
+      window.location.href = "/adminlogin/index.html";
+    }
+  } catch (error) {
+    console.error("Admin session check failed:", error);
+    window.location.href = "/adminlogin/index.html";
+  }
+})();
+
 
 // Get current month and year
-//const today = new Date();
-//const currentMonth = today.getMonth() + 1; // JS months are 0-indexed
-//const currentYear = today.getFullYear();
+const today = new Date();
+const currentMonth = today.getMonth() + 1; // JS months are 0-indexed
+const currentYear = today.getFullYear();
 // dashboard.js
 
-const currentMonth = 10;
-const currentYear = 2025;
+//const currentMonth = 10;
+//const currentYear = 2025;
+
 
 // ---------------- FETCHERS ----------------
 
@@ -327,3 +344,4 @@ async function initDashboard() {
 }
 
 initDashboard();
+

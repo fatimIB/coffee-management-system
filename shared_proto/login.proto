@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package login;
+
+service LoginService {
+    // Vérifier les credentials du café
+    rpc AuthenticateCafe(LoginRequest) returns (LoginResponse);
+    
+    // Récupérer la liste des cafés pour le dropdown
+    rpc GetAllCafes(EmptyRequest) returns (CafeListResponse);
+}
+
+message EmptyRequest {}
+
+message LoginRequest {
+    int32 cafe_id = 1;
+    string access_code = 2;
+}
+
+message LoginResponse {
+    bool success = 1;
+    string message = 2;
+    int32 cafe_id = 3;
+    string cafe_name = 4;
+}
+
+message Cafe {
+    int32 id = 1;
+    string name = 2;
+    string location = 3;
+}
+
+message CafeListResponse {
+    repeated Cafe cafes = 1;
+}

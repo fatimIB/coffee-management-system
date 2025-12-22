@@ -19,13 +19,38 @@ services:
 
   # Services
   login_service:
-    build: ./services/login_service
+    build:
+      context: .
+      dockerfile: ./services/login_service/Dockerfile
+    volumes:
+     - ./shared_proto:/app/shared_proto
+     - ./database:/app/database
     ports:
       - "5001:5001"
     depends_on:
       - db
     env_file:
       - .env
+    environment:
+      - PYTHONPATH=/app/shared_proto
+    
+
+  adminlogin:
+    build:
+      context: .
+      dockerfile: ./services/adminlogin/Dockerfile
+    volumes:
+     - ./shared_proto:/app/shared_proto
+     - ./database:/app/database
+    ports:
+      - "50011:50011"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app/shared_proto
+
 
   order_service:
     build:
@@ -114,6 +139,7 @@ services:
       - "5000:5000"
     depends_on:
       - login_service
+      - adminlogin
       - menu_service
       - inventory_service
       - cafe_service

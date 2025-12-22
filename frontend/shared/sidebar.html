@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -8,11 +9,9 @@
   <!-- CSS -->
   <link rel="stylesheet" href="../shared/sidebar_style.css" />
   <!-- Boxicons CSS -->
-  <link
-    href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css"
-    rel="stylesheet"
-  />
+  <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet" />
 </head>
+
 <body>
   <!-- Top Navbar -->
 
@@ -20,7 +19,7 @@
   <!-- Sidebar -->
   <div class="sidebar">
     <div class="logo">
-      <span class="logo-name">logo</span>
+        <img src="../shared/logo.png" alt="CaFeAg Logo" class="logo-image">
     </div>
     <div class="sidebar-content">
       <ul class="lists">
@@ -48,7 +47,21 @@
             <span class="link">Stock</span>
           </a>
         </li>
-      </div>
+        <li class="list">
+          <a href="../settings/index.html" class="nav-link">
+            <i class='bx bx-cog icon'></i>
+            <span class="link">Settings</span>
+          </a>
+        </li>
+      </ul>
+      <ul class="lists logout-list">
+        <li class="list logout">
+          <a href="#" id="logoutBtn" class="nav-link">
+            <i class="bx bx-log-out icon"></i>
+            <span class="link">Logout</span>
+          </a>
+        </li>
+      </ul>
     </div>
   </div>
 

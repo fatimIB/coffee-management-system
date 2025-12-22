@@ -9,40 +9,38 @@
     <!-- Boxicons -->
     <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet">
 
-    <!-- Shared sidebar -->
-    <link rel="stylesheet" href="../shared/sidebar_style.css">
-
     <!-- Orders CSS -->
     <link rel="stylesheet" href="orders.css">
 </head>
 
 <body>
-    <div id="sidebar-container"></div>
-
     <div class="container">
         <div class="content">
-            <h1>Create Order</h1>
-
-            <!-- Menu Items Selection -->
-            <div class="menu-section">
-                <h2>Select Items</h2>
-                <div id="menu-items" class="menu-grid"></div>
+            <div class="page-header">
+                <h1>Create Order</h1>
+                <button id="logout-btn" class="logout-btn">Logout</button>
             </div>
-
-            <!-- Selected Items Cart -->
-            <div class="cart-section">
-                <h2>Order Cart</h2>
-                <div id="cart-items" class="cart-items"></div>
-                <div class="cart-total">
-                    <strong>Total: <span id="total-price">0.00</span> MAD</strong>
+            <div class="main-flex">
+                <!-- Menu Items -->
+                <div class="menu-section">
+                    <h2>Menu Items</h2>
+                    <div id="menu-items" class="menu-grid"></div>
                 </div>
-                <button id="confirm-order-btn" class="confirm-btn" disabled>Confirm Order</button>
-            </div>
 
-            <!-- Success/Error Messages -->
+                <!-- Selected Items Cart -->
+                <div class="cart-section">
+                    <h2>Your Order</h2>
+                    <div id="cart-items" class="cart-items"></div>
+                    <div class="cart-total">
+                        <strong>Total: <span id="total-price">0.00</span> MAD</strong>
+                    </div>
+                    <button id="confirm-order-btn" class="confirm-btn" disabled>Confirm Order</button>
+                </div>
+            </div>
             <div id="message" class="message"></div>
         </div>
     </div>
+
 
     <script src="orders.js"></script>
 </body>

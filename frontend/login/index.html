@@ -3,39 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Coffee Management System</title>
+    <title>CaFeAg - Login</title>
     <link rel="stylesheet" href="login.css">
+    <script src="login.js"></script>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-card">
-            <h1>☕ Coffee Management System</h1>
-            <h2>Login</h2>
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="access-code">Access Code</label>
-                    <input 
-                        type="text" 
-                        id="access-code" 
-                        name="access-code" 
-                        placeholder="Enter your cafe access code"
-                        required
-                        autofocus
-                    />
-                </div>
-                <div id="error-message" class="error-message" style="display: none;"></div>
-                <button type="submit" class="login-btn">Login</button>
-            </form>
-            <div class="info-box">
-                <p><strong>Available Access Codes:</strong></p>
-                <ul>
-                    <li>DK456 - Café Dakhla</li>
-                    <li>SL789 - Café Salam</li>
-                    <li>AG123 - Agadir Bay Café</li>
-                </ul>
+    <!-- Left Image -->
+    <div class="side-image left-image">
+        <img src="/login/cafe-left.jpg" alt="Cafe ambiance">
+    </div>
+
+    <!-- Center Container -->
+    <div class="center-container">
+        <div class="container">
+            <!-- Logo -->
+            <div class="logo-section">
+                <img src="/login/logo.jpeg" alt="CaFeAg Logo" class="logo-image">
             </div>
+            
+            <div class="logo">
+                <h1>CaFeAg</h1>
+            </div>
+
+            <div class="welcome">
+                <h2>Welcome Back!</h2>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="cafe">Please Select a Cafe</label>
+                    <select id="cafe" name="cafe" required>
+                        <option value="cafe_agadir_bay">Agadir Bay Café</option>
+                        <option value="cafe_salam">Café Salam</option>
+                        <option value="cafe_dakhla">Café Dakhla</option>
+                    </select>
+                    <div class="error-message" id="cafeError">Please select a cafe</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="code">Access Code</label>
+                    <input type="password" id="code" name="code" placeholder="xxxxx" maxlength="5" required>
+                    <div class="error-message" id="codeError">Please enter a valid code</div>
+                </div>
+
+                <button type="submit" class="btn-login">Log In</button>
+            </form>
         </div>
     </div>
+
+    <!-- Right Image -->
+    <div class="side-image right-image">
+        <img src="/login/cafe-right.jpg" alt="Cafe ambiance">
+    </div>
+
     <script src="login.js"></script>
 </body>
 </html>

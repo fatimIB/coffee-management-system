@@ -1,15 +1,36 @@
-// Get cafe_id from session (set during login)
-let cafeId = sessionStorage.getItem('cafe_id');
-if (!cafeId) {
-    // If not logged in, store the current page and redirect to login
-    sessionStorage.setItem('redirect_after_login', window.location.pathname);
-    window.location.href = '../login/index.html';
-}
-
 let menuItems = [];
 let selectedItems = {}; // {item_id: {item, quantity}}
 
 const GATEWAY_URL = 'http://localhost:5000';
+
+let cafeId = null;
+
+// Check session on page load
+document.addEventListener('DOMContentLoaded', async () => {
+    await checkSession();
+    await loadMenuItems();
+});
+
+async function checkSession() {
+    try {
+        const response = await fetch(`${GATEWAY_URL}/api/session`, {
+            credentials: 'include' // 🔥 REQUIRED
+        });
+
+        const data = await response.json();
+
+        if (!data.authenticated) {
+            window.location.href = '../login/index.html';
+            return;
+        }
+
+        cafeId = data.cafe_id; // ✅ REAL SOURCE OF TRUTH
+
+    } catch (error) {
+        console.error('Session check failed:', error);
+        window.location.href = '../login/index.html';
+    }
+}
 
 // Load menu items on page load
 document.addEventListener('DOMContentLoaded', () => {
@@ -136,6 +157,7 @@ document.getElementById('confirm-order-btn').addEventListener('click', async () 
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'include', // 🔥 REQUIRED
             body: JSON.stringify({
                 cafe_id: cafeId,
                 items: items
@@ -145,7 +167,7 @@ document.getElementById('confirm-order-btn').addEventListener('click', async () 
         const data = await response.json();
 
         if (data.success) {
-            showMessage(`Order created successfully! Order ID: ${data.order_id}`, 'success');
+            showMessage(`Order created successfully!`, 'success');
             // Clear cart
             selectedItems = {};
             menuItems.forEach(item => {
@@ -171,3 +193,23 @@ function showMessage(message, type) {
         messageDiv.style.display = 'none';
     }, 5000);
 }
+
+
+document.getElementById('logout-btn').addEventListener('click', async () => {
+    try {
+        const response = await fetch(`${GATEWAY_URL}/api/userlogout`, {
+            method: 'POST',
+            credentials: 'include'
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            window.location.href = '../login/index.html'; // redirect to café login page
+        } else {
+            showMessage('Logout failed', 'error');
+        }
+    } catch (error) {
+        console.error('Error logging out:', error);
+        showMessage('Error logging out', 'error');
+    }
+});

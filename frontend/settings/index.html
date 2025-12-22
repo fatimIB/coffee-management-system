@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Settings</title>
+    <link rel="stylesheet" href="settings.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div id="sidebar-container"></div>
+    <div class="settings-container">
+        <h2>Change password</h2>
+        <form id="settings-form">
+            <label for="username">New Username</label>
+            <input type="text" id="username" placeholder="Enter new username">
+
+            <label for="password">New Password</label>
+            <input type="password" id="password" placeholder="Enter new password">
+
+            <button type="submit" id="save-btn">Save Changes</button>
+        </form>
+    </div>
+
+     <!-- DELETE CONFIRMATION MODAL -->
+    <div id="delete-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3>Are you sure?</h3>
+            <p>This item will be permanently deleted.</p>
+
+            <div class="modal-actions">
+                <button id="cancel-delete" class="modal-btn cancel">Cancel</button>
+                <button id="confirm-delete" class="modal-btn confirm">Delete</button>
+            </div>
+        </div>
+    </div>
+    <script src="settings.js"></script>
+    <script>
+        // Load sidebar.html into the container
+        fetch("../shared/sidebar.html")
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("sidebar-container").innerHTML = `
+      <link rel="stylesheet" href="../shared/sidebar_style.css">
+      ${data}
+    `;
+                const script = document.createElement("script");
+                script.src = "../shared/sidebar.js";
+                document.body.appendChild(script);
+            })
+            .catch(error => console.error("Error loading sidebar:", error));
+    </script>
+
+</body>
+
+</html>

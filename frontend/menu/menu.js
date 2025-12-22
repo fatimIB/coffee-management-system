@@ -1,3 +1,20 @@
+(async function protectDashboard() {
+  try {
+    const response = await fetch("http://localhost:5000/api/admin/session", {
+      method: "GET",
+      credentials: "include"
+    });
+
+    if (!response.ok) {
+      window.location.href = "/adminlogin/index.html";
+    }
+  } catch (error) {
+    console.error("Admin session check failed:", error);
+    window.location.href = "/adminlogin/index.html";
+  }
+})();
+
+
 // Use Gateway URL for API
 const API = "http://localhost:5000/api/menu";
 

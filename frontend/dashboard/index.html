@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="dashboard.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 </head>
 
 <body>
@@ -67,24 +65,29 @@
         </div>
 
 
-        <script src="dashboard.js"></script>
-    </main>
-</body>
 
-<script>
-    // Load sidebar.html into the container
-    fetch("../shared/sidebar.html")
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById("sidebar-container").innerHTML = `
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="dashboard.js"></script>
+    <script>
+        // Load sidebar.html into the container
+        fetch("../shared/sidebar.html")
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("sidebar-container").innerHTML = `
       <link rel="stylesheet" href="../shared/sidebar_style.css">
       ${data}
     `;
-            const script = document.createElement("script");
-            script.src = "../shared/sidebar.js";
-            document.body.appendChild(script);
-        })
-        .catch(error => console.error("Error loading sidebar:", error));
-</script>
+                const script = document.createElement("script");
+                script.src = "../shared/sidebar.js";
+                document.body.appendChild(script);
+            })
+            .catch(error => console.error("Error loading sidebar:", error));
+    </script>
+
+
+</body>
+
+
 
 </html>

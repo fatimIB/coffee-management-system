@@ -13,3 +13,31 @@ function setActiveLink() {
 }
 
 setActiveLink();
+
+
+const logoutBtn = document.getElementById("logoutBtn");
+
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:5000/adminlogout", {
+        method: "POST",
+        credentials: "include"
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        window.location.href = "/adminlogin/index.html";
+      } else {
+        alert("Logout failed");
+      }
+
+    } catch (error) {
+      console.error("Logout error:", error);
+      alert("Server error during logout");
+    }
+  });
+}

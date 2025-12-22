@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CaFeAg - Admin Login</title>
+    <link rel="stylesheet" href="adminlogin.css">
+</head>
+<body>
+    <div class="side-image left-image">
+        <img src="cafe-left.jpg" alt="Café ambiance">
+    </div>
+
+    <div class="center-container">
+        <div class="container">
+            <div class="logo-section">
+                <img src="logo.jpeg" alt="CaFeAg Logo" class="logo-image">
+            </div>
+
+            <div class="logo">
+                <h1>CaFeAg</h1>
+            </div>
+
+            <div class="welcome">
+                <h2>Admin Login</h2>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter username" required>
+                    <div class="error-message" id="usernameError">Please enter a username</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter password" required>
+                    <div class="error-message" id="passwordError">Please enter a password</div>
+                </div>
+
+                <button type="submit" class="btn-login">Log In</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="side-image right-image">
+        <img src="cafe-right.jpg" alt="Café ambiance">
+    </div>
+
+    <script src="adminlogin.js"></script>
+</body>
+</html>
