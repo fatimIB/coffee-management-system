@@ -8,8 +8,9 @@ import bcrypt
 import math
 from grpc_clients.menu_client import get_menu_items, add_menu_item, update_menu_item, delete_menu_item
 from grpc_clients.order_client import create_order, get_orders_by_cafe
-from dotenv import load_dotenv
 from database.db_connection import get_connection
+from dotenv import load_dotenv
+import os
 
 # Load env variables
 load_dotenv()
@@ -26,7 +27,7 @@ CORS(
     ] 
 ) 
 
-app.secret_key = 'cafe-management-secret-2025'
+app.secret_key = os.getenv('SECRET_KEY')
 app.config.update(
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE="None",  
