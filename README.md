@@ -1,250 +1,146 @@
 # ☕ Coffee Management System
 
-A **microservices-based coffee shop management system** built using **Python (Flask)**, **gRPC**, **REST APIs**, **MySQL**, and **Docker**.
-
-This project demonstrates a **real-world distributed architecture**, where services are fully decoupled and communicate through well-defined interfaces.
+A **microservices-based coffee shop management system** built using **Python (Flask)**, **MySQL**, and **Docker**.  
+This project demonstrates a distributed architecture where each feature runs as an independent service, communicating through **REST and gRPC**.
 
 ---
 
 ## 🚀 Features
 
-- **Gateway Service**
-  - Central entry point for the system
-  - Handles authentication, sessions, and request routing
-
-- **Login Service**
-  - Handles user authentication
-
-- **Admin Login Service**
-  - Dedicated authentication service for admins
-  - Session-based admin access control
-
-- **Menu Service**
-  - Manages coffee menu items
-
-- **Order Service**
-  - Handles customer orders
-
-- **Inventory Service**
-  - Tracks stock and ingredients
-
-- **Cafe Service**
-  - Manages cafe locations and details
-
-- **Analytics Service**
-  - Provides sales analytics and dashboard metrics
-
-- **Frontend**
-  - Web-based interface (HTML, CSS, JavaScript)
-  - Communicates only with the Gateway
+- **Login Service:** Handles user authentication (login/signup).  
+- **Admin Login Service:** Handles admin authentication.  
+- **Menu Service:** Manages coffee menu items.  
+- **Order Service:** Handles customer orders.  
+- **Inventory Service:** Tracks stock and ingredients.  
+- **Cafe Service:** Manages cafe locations and details.  
+- **Analytics Service:** Generates sales and performance insights.  
+- **Gateway:** Central API gateway routing requests to services.  
+- **Frontend:** Web interface for users and admin.
 
 ---
 
 ## ⚙️ Technologies Used
 
 - **Backend:** Python, Flask  
-- **Communication:** REST APIs, gRPC (Protocol Buffers)  
-- **Database:** MySQL  
-- **Containerization:** Docker, Docker Compose  
+- **Database:** MySQL (connection through environment variables)  
+- **Containerization:** Docker & Docker Compose  
 - **Frontend:** HTML, CSS, JavaScript  
-- **Version Control:** Git, GitHub  
+- **Communication:** REST (Frontend → Gateway), gRPC (Gateway → Services)  
+- **Version Control:** Git & GitHub  
 
 ---
 
 ## 🧩 Ports Overview
 
-| Service               | Description                       | Port   |
-|-----------------------|-----------------------------------|--------|
-| Gateway               | Central API Gateway               | 5000   |
-| Login Service         | User authentication               | 5001   |
-| Order Service         | Order management                  | 5002   |
-| Analytics Service     | Sales & analytics                 | 5003   |
-| Cafe Service          | Cafe management                   | 5004   |
-| Menu Service          | Menu operations                   | 5005   |
-| Inventory Service     | Inventory management              | 5006   |
-| Admin Login Service   | Admin authentication              | 50011  |
-| MySQL Database        | Database container                | 3307   |
-| Frontend              | Web interface                     | 8080   |
+| Service              | Description                  | Port  |
+|----------------------|------------------------------|-------|
+| Gateway              | Main API gateway             | 5000  |
+| Login Service        | Handles user authentication  | 5001  |
+| Admin Login Service  | Admin authentication         | 5011  |
+| Order Service        | Manages customer orders      | 5002  |
+| Analytics Service    | Sales and analytics          | 5003  |
+| Cafe Service         | Cafe info and management     | 5004  |
+| Menu Service         | Coffee menu operations       | 5005  |
+| Inventory Service    | Stock management             | 5006  |
+| MySQL Database       | Data storage (container)     | 3307  |
+| Frontend             | Web interface                | 8080  |
 
 ---
 
 ## 🐳 Running the Project
 
-### Prerequisites
-- Docker
-- Docker Compose
-
-### Steps
+Make sure you have **Docker** and **Docker Compose** installed.
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/fatimIB/coffee-management-system.git
 cd coffee-management-system
 ```
 
-2. Build and start all services:
+2. Build and run the containers:
+
 ```bash
 docker-compose up --build
 ```
 
 3. Access the system:
+
    - **Frontend:** http://localhost:8080
    - **Gateway API:** http://localhost:5000
+   - **MySQL Database:** localhost:3307
 
-4. Stop the containers:
+4. Stop containers:
+
 ```bash
 docker-compose down
 ```
 
 ---
 
-## 🔗 System Communication Architecture (REST & gRPC)
+## 🔄 How It Works (Communication Flow)
 
-This project uses a hybrid communication architecture combining REST APIs and gRPC, where each protocol is used according to its strengths.
+### 1. Frontend → Gateway (REST)
 
-### 🌐 External Communication: REST (Frontend ↔ Gateway)
+The frontend communicates with the gateway using REST HTTP requests (GET, POST, etc.).
 
-The frontend communicates only with the Gateway
+Example: Fetching analytics data or sending login credentials.
 
-- Communication uses HTTP + JSON
-- JavaScript fetch() is used on the frontend
-- REST is used because browsers cannot consume gRPC directly
+### 2. Gateway → Microservices (gRPC)
 
-**Examples:**
-- Login & admin login
-- Dashboard analytics
-- Orders, menu, inventory, cafes
-- Session validation & logout
+The gateway communicates with each microservice using gRPC with Protocol Buffers:
 
-```
-Frontend  →  REST (HTTP + JSON)  →  Gateway
-```
+- Sends structured requests
+- Receives structured responses
+- Converts gRPC responses to JSON for the frontend
 
-### 🚪 Gateway (Central Entry Point)
+### 3. Database Access
 
-The Gateway is the core of the system.
+Each microservice connects to the MySQL database using environment variables for credentials.
 
-**Responsibilities:**
-- Exposes REST endpoints to the frontend
-- Manages user and admin sessions
-- Validates requests
-- Translates REST requests into gRPC calls
-- Aggregates responses when needed
-
-The gateway never contains business logic.
-
-### ⚡ Internal Communication: gRPC (Gateway ↔ Microservices)
-
-All backend services communicate only via gRPC
-
-- gRPC uses Protocol Buffers (.proto files)
-- Services are strongly typed and independent
-
-**gRPC-enabled services:**
-- Login Service
-- Admin Login Service
-- Analytics Service
-- Order Service
-- Menu Service
-- Inventory Service
-- Cafe Service
+### Communication Flow Diagram
 
 ```
-Gateway  →  gRPC  →  Microservice
+[Frontend (Browser)] 
+         |
+         |  REST (HTTP JSON)
+         v
+[Gateway API] 
+    |      |       |       |       |
+    |      |       |       |       |
+   gRPC   gRPC    gRPC    gRPC    gRPC
+    v      v       v       v       v
+[Login] [AdminLogin] [Menu] [Orders] [Analytics]
+[Inventory] [Cafe]
+    |
+    v
+[MySQL Database]
 ```
-
-### 🔄 Example Flow: Admin Login
-
-```
-1. Frontend sends POST /adminlogin (REST)
-2. Gateway receives the request
-3. Gateway calls Admin Login Service via gRPC
-4. Admin Login Service validates credentials
-5. gRPC response is returned
-6. Gateway creates a session
-7. REST JSON response sent back to frontend
-```
-
-### 📊 Analytics Flow
-
-```
-Frontend
-   ↓ REST
-Gateway
-   ↓ gRPC
-Analytics Service
-   ↓ gRPC
-Gateway
-   ↓ REST (JSON)
-Dashboard
-```
-
-The frontend is completely unaware of gRPC.
 
 ---
 
-## 🔐 Sessions & Security
+## 🧪 Manual Testing Performed
 
-- Sessions are handled only in the Gateway
-- Backend services remain stateless
-- Sensitive data is never exposed to the frontend
-- Configuration is handled using environment variables
+- **Database Connection Test:** Verified connection to MySQL before starting services.
 
----
+- **Service Smoke Tests:** Opened each service in a browser by port to confirm it is running (e.g., http://localhost:5001 for Login Service).
 
-## 🚫 Technologies Not Used
+- **Admin Login Flow:** Verified admin login works via frontend and session management.
 
-- ❌ WebSockets (intentionally removed)
-- ❌ Direct frontend → microservice communication
-- ❌ gRPC exposed to the browser
+- **Menu, Orders, Inventory, Analytics:** Verified CRUD operations through frontend interactions and gateway routing.
+
+These are manual functional checks to ensure the system works correctly.
 
 ---
 
-## 🧪 Testing
+## 🧑‍💻 Contributors
 
-### Current State
-- Manual testing through the frontend
-- API behavior verified via real user flows
-- Container-level testing using Docker Compose
-
-### Recommended Future Tests
-- Unit tests for each microservice
-- gRPC service tests
-- Gateway integration tests
-- Authentication & authorization tests
-- End-to-end tests (frontend → gateway → services)
-
----
-
-## 🧠 Architecture Summary
-
-```
-[ Frontend ]
-     |
-     |  REST (HTTP + JSON)
-     v
-[ Gateway ]
-     |
-     |  gRPC (Protocol Buffers)
-     v
-[ Microservices ]
-(Login, AdminLogin, Orders, Menu, Inventory, Cafe, Analytics)
-```
-
-This architecture follows real industry microservices patterns, ensuring:
-
-- Scalability
-- Security
-- Clean separation of concerns
-- Maintainability
-
----
-
-## 🧑‍💻 Author
-
-- **Fatima Iboubkarne**
-- Data Analytics & AI Student
-- Distributed Systems Project
+- **Fatima Iboubkarne** – Project Lead & Developer
+- **Faris Amina** – Developer
+- **Abdelkbir Chouiter** – Developer
+- **Salma Jeghloul** – Developer
+- **Ayoub El Orf** – Developer
+- **Ismail Dakir** – Developer
 
 ---
 
