@@ -30,8 +30,8 @@ CORS(
 app.secret_key = os.getenv('SECRET_KEY')
 app.config.update(
     SESSION_COOKIE_HTTPONLY=True,
-    SESSION_COOKIE_SAMESITE="None",  
-    SESSION_COOKIE_SECURE=True     
+    SESSION_COOKIE_SAMESITE="Lax",  
+    SESSION_COOKIE_SECURE=False     
 )
 login_client = LoginClient()
 admin_client = AdminLoginClient() 
@@ -52,7 +52,10 @@ def adminlogin():
         if result["success"]:
             session["admin_id"] = result["admin_id"]
             session["username"] = username
-            return jsonify({"success": True})
+            return jsonify({"success": True,
+                            "admin_id": result["admin_id"],  
+                            "message": "Login successful"
+                            })
         else:
             return jsonify({"success": False, "message": result.get("message", "Invalid credentials")}), 401
     except Exception as e:

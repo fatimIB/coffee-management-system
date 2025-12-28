@@ -1,15 +1,13 @@
 import sys
 import os
-import time
-from datetime import datetime
-import random
-import string
+import time  # <- added for timing
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import requests
 import grpc
+import random
+import string
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-# Import gRPC proto modules
+# Import your gRPC proto modules
 from shared_proto import (
     order_pb2, order_pb2_grpc,
     cafe_pb2, cafe_pb2_grpc,
@@ -20,7 +18,7 @@ from shared_proto import (
 )
 
 # ----------------------
-# CONFIG
+# CONFIGURATION
 # ----------------------
 BASE_URL = "http://localhost:5000"
 
@@ -34,12 +32,14 @@ GRPC_ADDRESSES = {
 }
 
 TEST_CAFE_ID = 1
+TEST_ITEM_ID = 1
 TEST_ITEM_PRICE = 10.0
 TEST_USER_ACCESS = "DK456"
-NUM_REQUESTS = 20  # number of requests for performance test
+
+NUM_REQUESTS = 20  # Number of concurrent performance requests
 
 # ----------------------
-# Helpers
+# HELPERS
 # ----------------------
 def random_string(length=6):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
@@ -55,7 +55,7 @@ def print_stats(service_name, times):
         print(f"Temps min: {min_time:.4f} sec\n")
 
 # ----------------------
-# REST Tests
+# REST TEST FUNCTIONS
 # ----------------------
 def rest_orders():
     print("\n--- REST Orders ---")
@@ -63,7 +63,7 @@ def rest_orders():
     for i in range(NUM_REQUESTS):
         payload = {
             "cafe_id": TEST_CAFE_ID,
-            "items": [{"item_id": 1, "quantity": 1, "price": TEST_ITEM_PRICE}]
+            "items": [{"item_id": TEST_ITEM_ID, "quantity": 1, "price": TEST_ITEM_PRICE}]
         }
         start_time = time.time()
         try:
@@ -144,7 +144,7 @@ def rest_analytics():
     print_stats("REST Analytics", response_times)
 
 # ----------------------
-# gRPC Helpers
+# gRPC TEST FUNCTIONS
 # ----------------------
 def test_grpc_service(stub_class, service_name, request_func, address):
     print(f"\n--- gRPC {service_name} ---")
@@ -165,40 +165,13 @@ def test_grpc_service(stub_class, service_name, request_func, address):
     channel.close()
     print_stats(f"gRPC {service_name}", response_times)
 
-# ----------------------
-# gRPC Request Functions
-# ----------------------
-
-def grpc_restock_item(stub, item_id, cafe_id, quantity):
-    req = inventory_pb2.RestockItemRequest(
-        item_id=item_id,
-        cafe_id=cafe_id,
-        quantity_added=quantity,
-        restock_date=datetime.now().isoformat()
-    )
-    return stub.RestockItem(req)
-
-def restock_all_items_grpc(cafe_id, quantity_per_item=200):
-    """Restock all items in inventory before running order tests."""
-    channel = grpc.insecure_channel(GRPC_ADDRESSES["inventory"])
-    stub = inventory_pb2_grpc.InventoryServiceStub(channel)
-    
-    # Fetch all inventory items
-    inventory_response = stub.GetInventoryByCafe(inventory_pb2.InventoryListRequest())
-    
-    for item in inventory_response.items:
-        grpc_restock_item(stub, int(item.item_id), int(cafe_id), quantity_per_item)
-        print(f"Restocked item {item.item_id} ({item.item_name}) with {quantity_per_item} units")
-    
-    channel.close()
-
-    
+# gRPC request functions (unchanged)
 def grpc_create_order(stub):
     req = order_pb2.CreateOrderRequest()
-    req.cafe_id = TEST_CAFE_ID
+    req.cafe_id = str(TEST_CAFE_ID)
     item = req.items.add()
-    item.item_id = 1  # assuming single item with ID 1
-    item.quantity = 1
+    item.item_id = str(TEST_ITEM_ID)
+    item.quantity = 150
     item.price = TEST_ITEM_PRICE
     return stub.CreateOrder(req)
 
@@ -219,14 +192,17 @@ def grpc_cafe(stub):
     return stub.CreateCafe(req)
 
 def grpc_inventory(stub):
-    req = inventory_pb2.InventoryListRequest()
+    req = inventory_pb2.UpdateInventoryRequest(
+        item_id="",
+        cafe_id=str(TEST_CAFE_ID),
+        quantity_ordered=0
+    )
     return stub.GetInventoryByCafe(req)
+
 
 def grpc_menu(stub):
     req = menu_pb2.MenuItemRequest(name="Perf Menu Item", category="Food", price=5.0)
     return stub.AddMenuItem(req)
-
-
 
 # ----------------------
 # MAIN
@@ -234,17 +210,14 @@ def grpc_menu(stub):
 if __name__ == "__main__":
     print("Starting Performance Tests...")
 
-    # --- REST Performance ---
+    # REST performance
     rest_orders()
     rest_user_login()
     rest_admin_login()
     rest_inventory()
     rest_analytics()
 
-    # --- gRPC Restock All Items BEFORE Order Test ---
-    restock_all_items_grpc(TEST_CAFE_ID, quantity_per_item=200)
-
-    # --- gRPC Performance ---
+    # gRPC performance
     test_grpc_service(order_pb2_grpc.OrderServiceStub, "order", grpc_create_order, GRPC_ADDRESSES["order"])
     test_grpc_service(login_pb2_grpc.LoginServiceStub, "login", grpc_login, GRPC_ADDRESSES["login"])
     test_grpc_service(adminlogin_pb2_grpc.AdminLoginServiceStub, "admin", grpc_admin, GRPC_ADDRESSES["admin"])

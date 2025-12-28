@@ -107,9 +107,9 @@ class LoginServicer(login_pb2_grpc.LoginServiceServicer):
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     login_pb2_grpc.add_LoginServiceServicer_to_server(LoginServicer(), server)
-    server.add_insecure_port('[::]:50052')
+    server.add_insecure_port('[::]:5001')
     server.start()
-    print("🔐 Login service running on port 50052...")
+    print("🔐 Login service running on port 5001...")
     try:
         while True:
             time.sleep(86400)

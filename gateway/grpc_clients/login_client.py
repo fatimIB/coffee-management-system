@@ -10,7 +10,7 @@ class LoginClient:
     def __init__(self):
         # Connexion au service gRPC
         self.host = os.getenv('LOGIN_SERVICE_HOST', 'login_service')
-        self.port = os.getenv('LOGIN_SERVICE_PORT', '50052')
+        self.port = os.getenv('LOGIN_SERVICE_PORT', '5001')
         self.channel = grpc.insecure_channel(f'{self.host}:{self.port}')
         self.stub = login_pb2_grpc.LoginServiceStub(self.channel)
 

@@ -4,6 +4,8 @@ import grpc
 from concurrent import futures
 import time
 from shared_proto import cafe_pb2, cafe_pb2_grpc
+from datetime import datetime
+
 
 class CafeService(cafe_pb2_grpc.CafeServiceServicer):
 
@@ -28,6 +30,7 @@ class CafeService(cafe_pb2_grpc.CafeServiceServicer):
         except Exception:
             return None
 
+
     # -------------------- CREATE --------------------
     def CreateCafe(self, request, context):
         conn = get_connection()
@@ -35,9 +38,10 @@ class CafeService(cafe_pb2_grpc.CafeServiceServicer):
             context.set_code(grpc.StatusCode.UNAVAILABLE)
             context.set_details("Database unavailable")
             return cafe_pb2.CafeResponse(success=False)
-
+    
         cursor = conn.cursor()
         try:
+            # Insert the new cafe
             try:
                 cursor.execute(
                     "INSERT INTO cafes (name, location, access_code) VALUES (%s, %s, %s) RETURNING cafe_id;",
@@ -48,29 +52,44 @@ class CafeService(cafe_pb2_grpc.CafeServiceServicer):
                     "INSERT INTO cafes (name, location, access_code) VALUES (%s, %s, %s)",
                     (request.nom, request.localisation, request.code_acces)
                 )
-
+    
+            # Get the inserted cafe_id
             cafe_id = self._get_inserted_id(cursor, request.code_acces)
-            conn.commit()
-
             if cafe_id is None:
+                conn.rollback()
                 return cafe_pb2.CafeResponse(
                     id=0,
                     nom=request.nom,
                     localisation=request.localisation,
                     code_acces=request.code_acces,
-                    success=True,
-                    message="Café créé (id non récupéré)"
+                    success=False,
+                    message="Impossible de récupérer l'ID du café"
                 )
+            
+            current_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
+            # Initialize inventory for all menu items
+            cursor.execute("SELECT item_id FROM menu_items")
+            menu_items = cursor.fetchall()
+            for item in menu_items:
+                cursor.execute(
+                    "INSERT INTO inventory (cafe_id, item_id, stock, restock_date) VALUES (%s, %s, %s, %s)",
+                    (cafe_id, item[0], 1, current_date)
+                )
+    
+            # Commit both cafe and inventory together
+            conn.commit()
+    
+            # Return successful response
             return cafe_pb2.CafeResponse(
                 id=cafe_id,
                 nom=request.nom,
                 localisation=request.localisation,
                 code_acces=request.code_acces,
                 success=True,
-                message="Café créé avec succès"
+                message="Café créé avec succès et inventaire initialisé"
             )
-
+    
         except Exception as e:
             conn.rollback()
             msg = str(e).lower()
@@ -82,11 +101,11 @@ class CafeService(cafe_pb2_grpc.CafeServiceServicer):
                 context.set_code(grpc.StatusCode.INTERNAL)
                 context.set_details(str(e))
                 return cafe_pb2.CafeResponse(success=False, message="Erreur base de données")
-
+    
         finally:
             cursor.close()
             conn.close()
-
+    
     # -------------------- GET ALL --------------------
     def GetAllCafes(self, request, context):
         conn = get_connection()
@@ -171,6 +190,19 @@ class CafeService(cafe_pb2_grpc.CafeServiceServicer):
 
         cursor = conn.cursor()
         try:
+            cursor.execute("""DELETE al 
+                           FROM analytics_logs al
+                           JOIN orders o ON al.order_id = o.order_id
+                           WHERE o.cafe_id = %s
+                           """, (request.id,))
+            cursor.execute("""
+                           DELETE oi
+                           FROM order_items oi
+                           JOIN orders o ON oi.order_id = o.order_id
+                           WHERE o.cafe_id = %s
+                           """, (request.id,))
+            cursor.execute("DELETE FROM orders WHERE cafe_id=%s", (request.id,))
+            cursor.execute("DELETE FROM inventory WHERE cafe_id=%s", (request.id,))
             cursor.execute("DELETE FROM cafes WHERE cafe_id=%s", (request.id,))
             conn.commit()
             deleted = cursor.rowcount

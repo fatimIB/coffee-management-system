@@ -61,3 +61,4 @@ def verify_cafe_code(access_code: str):
         request = cafe_pb2.CafeVerifyCodeRequest(code_acces=access_code)
         response = stub.VerifyCafeCode(request)
         return response
+
