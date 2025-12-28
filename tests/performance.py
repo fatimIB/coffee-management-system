@@ -1,20 +1,29 @@
 import sys
 import os
-import time  # <- added for timing
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import requests
-import grpc
+import time
 import random
 import string
+import requests
+import grpc
+from datetime import datetime
 
-# Import your gRPC proto modules
+
+# ----------------------
+# Adjust path to see shared_proto
+# ----------------------
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(BASE_DIR)
+
+# ----------------------
+# Import gRPC modules
+# ----------------------
 from shared_proto import (
     order_pb2, order_pb2_grpc,
     cafe_pb2, cafe_pb2_grpc,
     login_pb2, login_pb2_grpc,
     adminlogin_pb2, adminlogin_pb2_grpc,
-    inventory_pb2, inventory_pb2_grpc,
-    menu_pb2, menu_pb2_grpc
+    menu_pb2, menu_pb2_grpc,
+    inventory_pb2, inventory_pb2_grpc  # import module, do NOT import stub directly
 )
 
 # ----------------------
@@ -35,8 +44,7 @@ TEST_CAFE_ID = 1
 TEST_ITEM_ID = 1
 TEST_ITEM_PRICE = 10.0
 TEST_USER_ACCESS = "DK456"
-
-NUM_REQUESTS = 20  # Number of concurrent performance requests
+NUM_REQUESTS = 20
 
 # ----------------------
 # HELPERS
@@ -144,34 +152,14 @@ def rest_analytics():
     print_stats("REST Analytics", response_times)
 
 # ----------------------
-# gRPC TEST FUNCTIONS
+# gRPC REQUEST FUNCTIONS
 # ----------------------
-def test_grpc_service(stub_class, service_name, request_func, address):
-    print(f"\n--- gRPC {service_name} ---")
-    channel = grpc.insecure_channel(address)
-    stub = stub_class(channel)
-    response_times = []
-    for i in range(NUM_REQUESTS):
-        start_time = time.time()
-        try:
-            response = request_func(stub)
-            duration = time.time() - start_time
-            response_times.append(duration)
-            print(f"Request {i+1}: Success")
-        except grpc.RpcError as e:
-            duration = time.time() - start_time
-            response_times.append(duration)
-            print(f"Request {i+1}: {e.code()} - {e.details()}")
-    channel.close()
-    print_stats(f"gRPC {service_name}", response_times)
-
-# gRPC request functions (unchanged)
 def grpc_create_order(stub):
     req = order_pb2.CreateOrderRequest()
     req.cafe_id = str(TEST_CAFE_ID)
     item = req.items.add()
     item.item_id = str(TEST_ITEM_ID)
-    item.quantity = 150
+    item.quantity = 1
     item.price = TEST_ITEM_PRICE
     return stub.CreateOrder(req)
 
@@ -199,10 +187,60 @@ def grpc_inventory(stub):
     )
     return stub.GetInventoryByCafe(req)
 
-
 def grpc_menu(stub):
     req = menu_pb2.MenuItemRequest(name="Perf Menu Item", category="Food", price=5.0)
     return stub.AddMenuItem(req)
+
+def grpc_restock_item(stub, item_id, cafe_id, quantity):
+    req = inventory_pb2.RestockItemRequest(
+        item_id=str(item_id),
+        cafe_id=str(cafe_id),
+        quantity_added=quantity,
+        restock_date=datetime.now().isoformat() 
+    )
+    return stub.RestockItem(req)
+
+# ----------------------
+# gRPC TEST FUNCTIONS
+# ----------------------
+def test_grpc_service(stub_class, service_name, request_func, address):
+    print(f"\n--- gRPC {service_name} ---")
+    channel = grpc.insecure_channel(address)
+    stub = stub_class(channel)
+    response_times = []
+    for i in range(NUM_REQUESTS):
+        start_time = time.time()
+        try:
+            response = request_func(stub)
+            duration = time.time() - start_time
+            response_times.append(duration)
+            print(f"Request {i+1}: Success")
+        except grpc.RpcError as e:
+            duration = time.time() - start_time
+            response_times.append(duration)
+            print(f"Request {i+1}: {e.code()} - {e.details()}")
+    channel.close()
+    print_stats(f"gRPC {service_name}", response_times)
+
+def test_grpc_order_service_with_restock(order_stub, inventory_stub):
+    print("\n--- gRPC Order with Auto-Restock ---")
+    response_times = []
+    for i in range(NUM_REQUESTS):
+        # Restock 1 unit before each order
+        grpc_restock_item(inventory_stub, TEST_ITEM_ID, TEST_CAFE_ID, 1)
+
+        # Create order
+        start_time = time.time()
+        try:
+            response = grpc_create_order(order_stub)
+            duration = time.time() - start_time
+            response_times.append(duration)
+            print(f"Request {i+1}: Success")
+        except grpc.RpcError as e:
+            duration = time.time() - start_time
+            response_times.append(duration)
+            print(f"Request {i+1}: {e.code()} - {e.details()}")
+    print_stats("gRPC Order with Auto-Restock", response_times)
 
 # ----------------------
 # MAIN
@@ -210,19 +248,32 @@ def grpc_menu(stub):
 if __name__ == "__main__":
     print("Starting Performance Tests...")
 
-    # REST performance
+    # ---------------- REST Tests ----------------
     rest_orders()
     rest_user_login()
     rest_admin_login()
     rest_inventory()
     rest_analytics()
 
-    # gRPC performance
-    test_grpc_service(order_pb2_grpc.OrderServiceStub, "order", grpc_create_order, GRPC_ADDRESSES["order"])
+    # ---------------- gRPC Tests ----------------
+    order_channel = grpc.insecure_channel(GRPC_ADDRESSES["order"])
+    order_stub = order_pb2_grpc.OrderServiceStub(order_channel)
+
+    inventory_channel = grpc.insecure_channel(GRPC_ADDRESSES["inventory"])
+    inventory_stub = inventory_pb2_grpc.InventoryServiceStub(inventory_channel)
+
+    # Test order with auto-restock
+    test_grpc_order_service_with_restock(order_stub, inventory_stub)
+
+    # Other gRPC services
     test_grpc_service(login_pb2_grpc.LoginServiceStub, "login", grpc_login, GRPC_ADDRESSES["login"])
     test_grpc_service(adminlogin_pb2_grpc.AdminLoginServiceStub, "admin", grpc_admin, GRPC_ADDRESSES["admin"])
     test_grpc_service(cafe_pb2_grpc.CafeServiceStub, "cafe", grpc_cafe, GRPC_ADDRESSES["cafe"])
     test_grpc_service(inventory_pb2_grpc.InventoryServiceStub, "inventory", grpc_inventory, GRPC_ADDRESSES["inventory"])
     test_grpc_service(menu_pb2_grpc.MenuServiceStub, "menu", grpc_menu, GRPC_ADDRESSES["menu"])
+
+    # Close channels
+    order_channel.close()
+    inventory_channel.close()
 
     print("\nPerformance Tests Completed!")
