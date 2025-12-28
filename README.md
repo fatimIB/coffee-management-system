@@ -79,7 +79,6 @@ Each microservice:
 | Service              | Responsibility                      |
 |----------------------|-------------------------------------|
 | Gateway              | Central entry point, routes REST requests to gRPC services     |
-|                      |                                     |
 | Login Service        | User authentication                 |
 | Admin Login Service  | Admin authentication                |
 | Cafe Service         | Cafe creation and management        |
@@ -156,7 +155,7 @@ Uses Protocol Buffers
 
 ## 📊 Communication Flow Diagram
 
-```
+
 ┌───────────────────────────────────────────────────────────────────────┐
 │                         Docker Compose                                │
 │            (Single Virtual Network – Service Names DNS)               │
@@ -212,7 +211,7 @@ Uses Protocol Buffers
 │  └──────────────────────────┘                                         │
 │                                                                       │
 └───────────────────────────────────────────────────────────────────────┘
-```
+
 
 ---
 
@@ -330,4 +329,5 @@ It demonstrates practical implementation of:
 ## 📜 License
 
 Educational use only.
+
 
